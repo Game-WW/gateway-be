@@ -28,10 +28,10 @@ func Auth(jwtSecret string) fiber.Handler {
 		token := c.Cookies(AccessCookieName)
 		userID, err := parseUserID(token, secret)
 		if err != nil {
-			// Тот же формат, что у ошибок grpc-gateway, чтобы фронт разбирал их одинаково.
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"code":    int(codes.Unauthenticated),
 				"message": "unauthenticated",
+				"details": []any{},
 			})
 		}
 

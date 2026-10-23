@@ -15,19 +15,13 @@ const (
 )
 
 // Headers готовит заголовки, которые proxy переложит в gRPC metadata.
-// Всё, что клиент мог прислать в них сам, перезаписывается или удаляется.
 func Headers() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		h := &c.Request().Header
 
-		// X-User-Id ставит только Auth — на публичных ручках его быть не должно.
 		h.Del(UserIDHeader)
-
-		// grpc-gateway дописывает реальный IP к X-Forwarded-For, а users-be берёт первый адрес —
-		// без удаления им был бы адрес, который прислал клиент.
 		h.Del(forwardedForHeader)
 
-		// User-Agent в gRPC перезаписывает сам клиент, поэтому передаём копию.
 		setOrDel(h, UserAgentHeader, c.Get(fiber.HeaderUserAgent))
 		setOrDel(h, RefreshTokenHeader, c.Cookies(RefreshCookieName))
 

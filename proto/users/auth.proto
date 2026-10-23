@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package users;
+
+option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
+
+// Сообщения пустые: всё нужное ходит через metadata (см. UsersService в users.proto).
+
+message AuthGoogleRequest {}
+
+message AuthGoogleResponse {}
+
+message RefreshRequest {}
+
+message RefreshResponse {}
+
+message LogoutRequest {}
+
+message LogoutResponse {}

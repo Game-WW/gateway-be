@@ -47,8 +47,7 @@ func forwardCookies(ctx context.Context, w http.ResponseWriter, _ proto.Message)
 	return nil
 }
 
-// accessTokenTTL берёт срок жизни cookie из exp самого токена, чтобы он задавался в одном месте — в users-be.
-// Подпись не проверяем: токен пришёл от нашего сервиса, а не от клиента.
+// accessTokenTTL берёт срок жизни cookie из exp самого токена.
 func accessTokenTTL(token string) (time.Duration, error) {
 	parsed, _, err := jwt.NewParser().ParseUnverified(token, jwt.MapClaims{})
 	if err != nil {

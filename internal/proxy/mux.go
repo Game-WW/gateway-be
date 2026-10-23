@@ -7,8 +7,7 @@ import (
 	"strings"
 	"time"
 
-	authpb "github.com/Game-WW/gateway-be/gen/auth"
-	userpb "github.com/Game-WW/gateway-be/gen/user"
+	userspb "github.com/Game-WW/gateway-be/gen/users"
 	"github.com/Game-WW/gateway-be/internal/middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -29,7 +28,6 @@ var incomingHeaders = map[string]string{
 func NewMux(ctx context.Context, usersConn *grpc.ClientConn) (http.Handler, error) {
 	mux := runtime.NewServeMux(
 		runtime.WithIncomingHeaderMatcher(headerMatcher),
-		// Metadata ответа (там токены) наружу не отдаём — только через cookie.
 		runtime.WithOutgoingHeaderMatcher(dropAll),
 		runtime.WithOutgoingTrailerMatcher(dropAll),
 		runtime.WithForwardResponseOption(forwardCookies),
@@ -38,11 +36,8 @@ func NewMux(ctx context.Context, usersConn *grpc.ClientConn) (http.Handler, erro
 		}),
 	)
 
-	if err := userpb.RegisterUserServiceHandler(ctx, mux, usersConn); err != nil {
+	if err := userspb.RegisterUsersServiceHandler(ctx, mux, usersConn); err != nil {
 		return nil, fmt.Errorf("proxy: register users: %w", err)
-	}
-	if err := authpb.RegisterAuthServiceHandler(ctx, mux, usersConn); err != nil {
-		return nil, fmt.Errorf("proxy: register auth: %w", err)
 	}
 
 	return withTimeout(mux), nil
@@ -57,8 +52,7 @@ func withTimeout(next http.Handler) http.Handler {
 	})
 }
 
-// В metadata пропускаем только заголовки из incomingHeaders: дефолтный матчер прокинул бы
-// и Grpc-Metadata-* от клиента, а через него можно подделать x-user-id.
+// В metadata пропускаем только заголовки из incomingHeaders.
 func headerMatcher(key string) (string, bool) {
 	for header, metaKey := range incomingHeaders {
 		if strings.EqualFold(key, header) {

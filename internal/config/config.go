@@ -9,7 +9,6 @@ import (
 type Config struct {
 	Port           int    `env:"PORT"            envDefault:"8080"`
 	JWTSecret      string `env:"JWT_SECRET,required"`
-	// 127.0.0.1, а не localhost: на Windows gRPC резолвит localhost >5с на первом соединении.
 	UsersGRPCAddr  string `env:"USERS_GRPC_ADDR" envDefault:"127.0.0.1:50051"`
 	AllowedOrigins string `env:"ALLOWED_ORIGINS,required"`
 }

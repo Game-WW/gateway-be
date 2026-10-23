@@ -2,12 +2,11 @@
 // versions:
 // 	protoc-gen-go v1.36.12
 // 	protoc        (unknown)
-// source: user/user.proto
+// source: users/user.proto
 
-package userpb
+package userspb
 
 import (
-	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -32,7 +31,7 @@ type GetMeRequest struct {
 
 func (x *GetMeRequest) Reset() {
 	*x = GetMeRequest{}
-	mi := &file_user_user_proto_msgTypes[0]
+	mi := &file_users_user_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +43,7 @@ func (x *GetMeRequest) String() string {
 func (*GetMeRequest) ProtoMessage() {}
 
 func (x *GetMeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_user_proto_msgTypes[0]
+	mi := &file_users_user_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +56,7 @@ func (x *GetMeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMeRequest.ProtoReflect.Descriptor instead.
 func (*GetMeRequest) Descriptor() ([]byte, []int) {
-	return file_user_user_proto_rawDescGZIP(), []int{0}
+	return file_users_user_proto_rawDescGZIP(), []int{0}
 }
 
 type GetMeResponse struct {
@@ -69,7 +68,7 @@ type GetMeResponse struct {
 
 func (x *GetMeResponse) Reset() {
 	*x = GetMeResponse{}
-	mi := &file_user_user_proto_msgTypes[1]
+	mi := &file_users_user_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -81,7 +80,7 @@ func (x *GetMeResponse) String() string {
 func (*GetMeResponse) ProtoMessage() {}
 
 func (x *GetMeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_user_user_proto_msgTypes[1]
+	mi := &file_users_user_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -94,7 +93,7 @@ func (x *GetMeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMeResponse.ProtoReflect.Descriptor instead.
 func (*GetMeResponse) Descriptor() ([]byte, []int) {
-	return file_user_user_proto_rawDescGZIP(), []int{1}
+	return file_users_user_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *GetMeResponse) GetUser() *User {
@@ -104,6 +103,7 @@ func (x *GetMeResponse) GetUser() *User {
 	return nil
 }
 
+// Пользователь.
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -117,7 +117,7 @@ type User struct {
 
 func (x *User) Reset() {
 	*x = User{}
-	mi := &file_user_user_proto_msgTypes[2]
+	mi := &file_users_user_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -129,7 +129,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_user_user_proto_msgTypes[2]
+	mi := &file_users_user_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -142,7 +142,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_user_user_proto_rawDescGZIP(), []int{2}
+	return file_users_user_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *User) GetId() string {
@@ -180,84 +180,75 @@ func (x *User) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-var File_user_user_proto protoreflect.FileDescriptor
+var File_users_user_proto protoreflect.FileDescriptor
 
-const file_user_user_proto_rawDesc = "" +
+const file_users_user_proto_rawDesc = "" +
 	"\n" +
-	"\x0fuser/user.proto\x12\x04user\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x0e\n" +
-	"\fGetMeRequest\"/\n" +
-	"\rGetMeResponse\x12\x1e\n" +
-	"\x04user\x18\x01 \x01(\v2\n" +
-	".user.UserR\x04user\"\xee\x01\n" +
-	"\x04User\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\x10users/user.proto\x12\x05users\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x0e\n" +
+	"\fGetMeRequest\"0\n" +
+	"\rGetMeResponse\x12\x1f\n" +
+	"\x04user\x18\x01 \x01(\v2\v.users.UserR\x04user\"\xfa\x01\n" +
+	"\x04User\x12\x14\n" +
+	"\x02id\x18\x01 \x01(\tB\x04\xe2A\x01\x02R\x02id\x12\x1f\n" +
 	"\busername\x18\x02 \x01(\tH\x00R\busername\x88\x01\x01\x12\x19\n" +
 	"\x05email\x18\x03 \x01(\tH\x01R\x05email\x88\x01\x01\x12&\n" +
-	"\fphone_number\x18\x04 \x01(\tH\x02R\vphoneNumber\x88\x01\x01\x129\n" +
+	"\fphone_number\x18\x04 \x01(\tH\x02R\vphoneNumber\x88\x01\x01\x12?\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtB\v\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x02R\tcreatedAtB\v\n" +
 	"\t_usernameB\b\n" +
 	"\x06_emailB\x0f\n" +
-	"\r_phone_numberJ\x04\b\x05\x10\x06R\tgoogle_id2\xe3\x02\n" +
-	"\vUserService\x12\xd3\x02\n" +
-	"\x05GetMe\x12\x12.user.GetMeRequest\x1a\x13.user.GetMeResponse\"\xa0\x02\x92A\xfe\x01\x12'Текущий пользователь\x1a;Нужна cookie access_token (ставит /auth/google).Ja\n" +
-	"\x03401\x12Z\n" +
-	"XНет cookie access_token или токен истёк — вызвать /auth/refreshJ3\n" +
-	"\x03404\x12,\n" +
-	"*Пользователь не найден\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/meB/Z-github.com/Game-WW/gateway-be/gen/user;userpbb\x06proto3"
+	"\r_phone_numberJ\x04\b\x05\x10\x06R\tgoogle_idB1Z/github.com/Game-WW/gateway-be/gen/users;userspbb\x06proto3"
 
 var (
-	file_user_user_proto_rawDescOnce sync.Once
-	file_user_user_proto_rawDescData []byte
+	file_users_user_proto_rawDescOnce sync.Once
+	file_users_user_proto_rawDescData []byte
 )
 
-func file_user_user_proto_rawDescGZIP() []byte {
-	file_user_user_proto_rawDescOnce.Do(func() {
-		file_user_user_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_user_user_proto_rawDesc), len(file_user_user_proto_rawDesc)))
+func file_users_user_proto_rawDescGZIP() []byte {
+	file_users_user_proto_rawDescOnce.Do(func() {
+		file_users_user_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_users_user_proto_rawDesc), len(file_users_user_proto_rawDesc)))
 	})
-	return file_user_user_proto_rawDescData
+	return file_users_user_proto_rawDescData
 }
 
-var file_user_user_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_user_user_proto_goTypes = []any{
-	(*GetMeRequest)(nil),          // 0: user.GetMeRequest
-	(*GetMeResponse)(nil),         // 1: user.GetMeResponse
-	(*User)(nil),                  // 2: user.User
+var file_users_user_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_users_user_proto_goTypes = []any{
+	(*GetMeRequest)(nil),          // 0: users.GetMeRequest
+	(*GetMeResponse)(nil),         // 1: users.GetMeResponse
+	(*User)(nil),                  // 2: users.User
 	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
-var file_user_user_proto_depIdxs = []int32{
-	2, // 0: user.GetMeResponse.user:type_name -> user.User
-	3, // 1: user.User.created_at:type_name -> google.protobuf.Timestamp
-	0, // 2: user.UserService.GetMe:input_type -> user.GetMeRequest
-	1, // 3: user.UserService.GetMe:output_type -> user.GetMeResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
+var file_users_user_proto_depIdxs = []int32{
+	2, // 0: users.GetMeResponse.user:type_name -> users.User
+	3, // 1: users.User.created_at:type_name -> google.protobuf.Timestamp
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_user_user_proto_init() }
-func file_user_user_proto_init() {
-	if File_user_user_proto != nil {
+func init() { file_users_user_proto_init() }
+func file_users_user_proto_init() {
+	if File_users_user_proto != nil {
 		return
 	}
-	file_user_user_proto_msgTypes[2].OneofWrappers = []any{}
+	file_users_user_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_user_proto_rawDesc), len(file_user_user_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_users_user_proto_rawDesc), len(file_users_user_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   3,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   0,
 		},
-		GoTypes:           file_user_user_proto_goTypes,
-		DependencyIndexes: file_user_user_proto_depIdxs,
-		MessageInfos:      file_user_user_proto_msgTypes,
+		GoTypes:           file_users_user_proto_goTypes,
+		DependencyIndexes: file_users_user_proto_depIdxs,
+		MessageInfos:      file_users_user_proto_msgTypes,
 	}.Build()
-	File_user_user_proto = out.File
-	file_user_user_proto_goTypes = nil
-	file_user_user_proto_depIdxs = nil
+	File_users_user_proto = out.File
+	file_users_user_proto_goTypes = nil
+	file_users_user_proto_depIdxs = nil
 }

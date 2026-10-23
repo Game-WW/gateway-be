@@ -1,4 +1,4 @@
-version: v2
+﻿version: v2
 clean: true
 inputs:
   - directory: proto
@@ -19,4 +19,6 @@ plugins:
       - allow_merge=true
       - merge_file_name=api
       - json_names_for_fields=false
-      - disable_default_errors=false
+      - disable_service_tags=true
+      - disable_default_errors=true
+      - openapi_naming_strategy=simple

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package users;
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
+
+message GetMeRequest {}
+
+message GetMeResponse {
+  User user = 1;
+}
+
+// REQUIRED — поле есть в ответе всегда: в Swagger попадает в required, фронт получает тип без `?`.
+// optional — может отсутствовать (null в БД).
+// Комментарий отделён пустой строкой: комментарий вплотную к message уходит в Swagger как описание.
+
+// Пользователь.
+message User {
+  reserved 5;
+  reserved "google_id";
+
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  optional string username = 2;
+  optional string email = 3;
+  optional string phone_number = 4;
+  google.protobuf.Timestamp created_at = 6 [(google.api.field_behavior) = REQUIRED];
+}

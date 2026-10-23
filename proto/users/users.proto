@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package users;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "users/auth.proto";
+import "users/user.proto";
+
+option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
+
+// Общая шапка Swagger — для всего API, все proto сливаются в один файл (allow_merge).
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Chess API"
+    version: "1.0"
+    description: "Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.\n\nОшибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов."
+  }
+  tags: {
+    name: "auth"
+    description: "Вход, обновление токена, выход"
+  }
+  tags: {
+    name: "users"
+    description: "Пользователи"
+  }
+  security_definitions: {
+    security: {
+      key: "GoogleIdToken"
+      value: {
+        type: TYPE_API_KEY
+        in: IN_HEADER
+        name: "Authorization"
+        description: "Bearer <google id_token>"
+      }
+    }
+  }
+};
+
+// Токены ходят через metadata, а не через тело:
+//   запрос: x-user-id, authorization (Bearer google id_token), x-refresh-token, x-user-agent, x-forwarded-for
+//   ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie
+//
+// Ошибки: у каждой — schema .google.rpc.Status и пример с реальным code/message из users-be.
+service UsersService {
+  rpc AuthGoogle(AuthGoogleRequest) returns (AuthGoogleResponse) {
+    option (google.api.http) = {post: "/api/v1/auth/google"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "auth"
+      summary: "Вход через Google"
+      description: "Ставит cookie access_token и refresh_token."
+      security: {
+        security_requirement: {
+          key: "GoogleIdToken"
+          value: {}
+        }
+      }
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет Bearer (`bearer token missing`) или невалидный Google id_token (`invalid google token`)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 16, \"message\": \"invalid google token\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 13, \"message\": \"auth google failed\", \"details\": []}"
+          }
+        }
+      }
+    };
+  }
+
+  rpc Refresh(RefreshRequest) returns (RefreshResponse) {
+    option (google.api.http) = {post: "/api/v1/auth/refresh"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "auth"
+      summary: "Обновить access_token"
+      description: "Нужна cookie refresh_token. Ставит новую cookie access_token."
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie refresh_token (`refresh token missing`), или токен не найден / истёк (`refresh token not found`) — нужен вход заново"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 16, \"message\": \"refresh token not found\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 13, \"message\": \"refresh failed\", \"details\": []}"
+          }
+        }
+      }
+    };
+  }
+
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {
+    option (google.api.http) = {post: "/api/v1/auth/logout"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "auth"
+      summary: "Выход"
+      description: "Удаляет refresh_token на сервере и очищает обе cookie. Без cookie тоже отвечает 200."
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 13, \"message\": \"logout failed\", \"details\": []}"
+          }
+        }
+      }
+    };
+  }
+
+  rpc GetMe(GetMeRequest) returns (GetMeResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users/me"
+      response_body: "user"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "users"
+      summary: "Текущий пользователь"
+      description: "Нужна cookie access_token (ставит /auth/google)."
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк — вызвать /auth/refresh"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "404"
+        value: {
+          description: "Пользователь из токена удалён из БД"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 5, \"message\": \"user not found\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 13, \"message\": \"get user failed\", \"details\": []}"
+          }
+        }
+      }
+    };
+  }
+}

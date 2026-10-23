@@ -2,16 +2,17 @@
   "swagger": "2.0",
   "info": {
     "title": "Chess API",
-    "description": "Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.",
+    "description": "Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.\n\nОшибки всегда в одном формате: {\"code\": \u003cgRPC-код\u003e, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.",
     "version": "1.0"
   },
   "tags": [
     {
-      "name": "AuthService",
-      "description": "Токены ходят через metadata, а не через тело:\n  запрос: authorization (Bearer google id_token), x-refresh-token, x-user-agent, x-forwarded-for\n  ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie"
+      "name": "auth",
+      "description": "Вход, обновление токена, выход"
     },
     {
-      "name": "UserService"
+      "name": "users",
+      "description": "Пользователи"
     }
   ],
   "consumes": [
@@ -25,27 +26,43 @@
       "post": {
         "summary": "Вход через Google",
         "description": "Ставит cookie access_token и refresh_token.",
-        "operationId": "AuthService_AuthGoogle",
+        "operationId": "UsersService_AuthGoogle",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/authAuthGoogleResponse"
+              "$ref": "#/definitions/AuthGoogleResponse"
             }
           },
           "401": {
-            "description": "Нет Bearer или невалидный Google id_token",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
+            "description": "Нет Bearer (`bearer token missing`) или невалидный Google id_token (`invalid google token`)",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "invalid google token",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "auth google failed",
+                "details": []
+              }
             }
           }
         },
         "tags": [
-          "AuthService"
+          "auth"
         ],
         "security": [
           {
@@ -57,24 +74,31 @@
     "/api/v1/auth/logout": {
       "post": {
         "summary": "Выход",
-        "description": "Удаляет refresh_token на сервере и очищает обе cookie.",
-        "operationId": "AuthService_Logout",
+        "description": "Удаляет refresh_token на сервере и очищает обе cookie. Без cookie тоже отвечает 200.",
+        "operationId": "UsersService_Logout",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/authLogoutResponse"
+              "$ref": "#/definitions/LogoutResponse"
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "logout failed",
+                "details": []
+              }
             }
           }
         },
         "tags": [
-          "AuthService"
+          "auth"
         ]
       }
     },
@@ -82,27 +106,43 @@
       "post": {
         "summary": "Обновить access_token",
         "description": "Нужна cookie refresh_token. Ставит новую cookie access_token.",
-        "operationId": "AuthService_Refresh",
+        "operationId": "UsersService_Refresh",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/authRefreshResponse"
+              "$ref": "#/definitions/RefreshResponse"
             }
           },
           "401": {
-            "description": "Нет cookie refresh_token, или токен не найден / истёк",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
+            "description": "Нет cookie refresh_token (`refresh token missing`), или токен не найден / истёк (`refresh token not found`) — нужен вход заново",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "refresh token not found",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "refresh failed",
+                "details": []
+              }
             }
           }
         },
         "tags": [
-          "AuthService"
+          "auth"
         ]
       }
     },
@@ -110,46 +150,62 @@
       "get": {
         "summary": "Текущий пользователь",
         "description": "Нужна cookie access_token (ставит /auth/google).",
-        "operationId": "UserService_GetMe",
+        "operationId": "UsersService_GetMe",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/userUser"
+              "$ref": "#/definitions/User"
             }
           },
           "401": {
             "description": "Нет cookie access_token или токен истёк — вызвать /auth/refresh",
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "unauthenticated",
+                "details": []
+              }
+            }
           },
           "404": {
-            "description": "Пользователь не найден",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
+            "description": "Пользователь из токена удалён из БД",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 5,
+                "message": "user not found",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "get user failed",
+                "details": []
+              }
             }
           }
         },
         "tags": [
-          "UserService"
+          "users"
         ]
       }
     }
   },
   "definitions": {
-    "authAuthGoogleResponse": {
-      "type": "object"
-    },
-    "authLogoutResponse": {
-      "type": "object"
-    },
-    "authRefreshResponse": {
-      "type": "object"
-    },
-    "protobufAny": {
+    "Any": {
       "type": "object",
       "properties": {
         "@type": {
@@ -158,7 +214,24 @@
       },
       "additionalProperties": true
     },
-    "rpcStatus": {
+    "AuthGoogleResponse": {
+      "type": "object"
+    },
+    "GetMeResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "LogoutResponse": {
+      "type": "object"
+    },
+    "RefreshResponse": {
+      "type": "object"
+    },
+    "Status": {
       "type": "object",
       "properties": {
         "code": {
@@ -172,20 +245,12 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/protobufAny"
+            "$ref": "#/definitions/Any"
           }
         }
       }
     },
-    "userGetMeResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/userUser"
-        }
-      }
-    },
-    "userUser": {
+    "User": {
       "type": "object",
       "properties": {
         "id": {
@@ -204,7 +269,12 @@
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "description": "Пользователь.",
+      "required": [
+        "id",
+        "created_at"
+      ]
     }
   },
   "securityDefinitions": {
