@@ -1,5 +1,7 @@
-version: v2
+﻿version: v2
 clean: true
+inputs:
+  - directory: proto
 plugins:
   - local: protoc-gen-go
     out: gen
@@ -7,3 +9,16 @@ plugins:
   - local: protoc-gen-go-grpc
     out: gen
     opt: paths=source_relative
+  - local: protoc-gen-grpc-gateway
+    out: gen
+    opt: paths=source_relative
+  - local: protoc-gen-openapiv2
+    out: docs/openapi
+    strategy: all
+    opt:
+      - allow_merge=true
+      - merge_file_name=api
+      - json_names_for_fields=false
+      - disable_service_tags=true
+      - disable_default_errors=true
+      - openapi_naming_strategy=simple

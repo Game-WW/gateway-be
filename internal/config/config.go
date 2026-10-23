@@ -7,8 +7,11 @@ import (
 )
 
 type Config struct {
-	Port      int    `env:"PORT"       envDefault:"8080"`
-	JWTSecret string `env:"JWT_SECRET,required"`
+	Port           int    `env:"PORT"            envDefault:"8080"`
+	JWTSecret      string `env:"JWT_SECRET,required"`
+	UsersGRPCAddr  string `env:"USERS_GRPC_ADDR" envDefault:"127.0.0.1:50051"`
+	AllowedOrigins string `env:"ALLOWED_ORIGINS,required"`
+	CookieSecure   bool   `env:"COOKIE_SECURE"   envDefault:"false"`
 }
 
 func Load() (*Config, error) {
@@ -30,6 +33,12 @@ func (c *Config) Validate() error {
 	}
 	if len(c.JWTSecret) < 32 {
 		return fmt.Errorf("config: JWT_SECRET must be at least 32 chars")
+	}
+	if c.UsersGRPCAddr == "" {
+		return fmt.Errorf("config: USERS_GRPC_ADDR is required")
+	}
+	if c.AllowedOrigins == "" {
+		return fmt.Errorf("config: ALLOWED_ORIGINS is required")
 	}
 
 	return nil

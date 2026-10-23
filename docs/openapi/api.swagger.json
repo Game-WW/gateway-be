@@ -1,0 +1,288 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Chess API",
+    "description": "Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.\n\nОшибки всегда в одном формате: {\"code\": \u003cgRPC-код\u003e, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Вход, обновление токена, выход"
+    },
+    {
+      "name": "users",
+      "description": "Пользователи"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/auth/google": {
+      "post": {
+        "summary": "Вход через Google",
+        "description": "Ставит cookie access_token и refresh_token.",
+        "operationId": "UsersService_AuthGoogle",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AuthGoogleResponse"
+            }
+          },
+          "401": {
+            "description": "Нет Bearer (`bearer token missing`) или невалидный Google id_token (`invalid google token`)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "invalid google token",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "auth google failed",
+                "details": []
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ],
+        "security": [
+          {
+            "GoogleIdToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "summary": "Выход",
+        "description": "Удаляет refresh_token на сервере и очищает обе cookie. Без cookie тоже отвечает 200.",
+        "operationId": "UsersService_Logout",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/LogoutResponse"
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "logout failed",
+                "details": []
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "summary": "Обновить access_token",
+        "description": "Нужна cookie refresh_token. Ставит новую cookie access_token.",
+        "operationId": "UsersService_Refresh",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/RefreshResponse"
+            }
+          },
+          "401": {
+            "description": "Нет cookie refresh_token (`refresh token missing`), или токен не найден / истёк (`refresh token not found`) — нужен вход заново",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "refresh token not found",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "refresh failed",
+                "details": []
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "summary": "Текущий пользователь",
+        "description": "Нужна cookie access_token (ставит /auth/google).",
+        "operationId": "UsersService_GetMe",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк — вызвать /auth/refresh",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "unauthenticated",
+                "details": []
+              }
+            }
+          },
+          "404": {
+            "description": "Пользователь из токена удалён из БД",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 5,
+                "message": "user not found",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "get user failed",
+                "details": []
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "AuthGoogleResponse": {
+      "type": "object"
+    },
+    "GetMeResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "LogoutResponse": {
+      "type": "object"
+    },
+    "RefreshResponse": {
+      "type": "object"
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Пользователь.",
+      "required": [
+        "id",
+        "created_at"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "GoogleIdToken": {
+      "type": "apiKey",
+      "description": "Bearer \u003cgoogle id_token\u003e",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}
