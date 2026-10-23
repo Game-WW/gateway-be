@@ -7,6 +7,8 @@
 package userpb
 
 import (
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -22,27 +24,26 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GetUserRequest struct {
+type GetMeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetUserRequest) Reset() {
-	*x = GetUserRequest{}
+func (x *GetMeRequest) Reset() {
+	*x = GetMeRequest{}
 	mi := &file_user_user_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetUserRequest) String() string {
+func (x *GetMeRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetUserRequest) ProtoMessage() {}
+func (*GetMeRequest) ProtoMessage() {}
 
-func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
+func (x *GetMeRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_user_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -54,39 +55,32 @@ func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
-func (*GetUserRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetMeRequest.ProtoReflect.Descriptor instead.
+func (*GetMeRequest) Descriptor() ([]byte, []int) {
 	return file_user_user_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GetUserRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-type GetUserResponse struct {
+type GetMeResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetUserResponse) Reset() {
-	*x = GetUserResponse{}
+func (x *GetMeResponse) Reset() {
+	*x = GetMeResponse{}
 	mi := &file_user_user_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetUserResponse) String() string {
+func (x *GetMeResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetUserResponse) ProtoMessage() {}
+func (*GetMeResponse) ProtoMessage() {}
 
-func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
+func (x *GetMeResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_user_user_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,12 +92,12 @@ func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetUserResponse.ProtoReflect.Descriptor instead.
-func (*GetUserResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetMeResponse.ProtoReflect.Descriptor instead.
+func (*GetMeResponse) Descriptor() ([]byte, []int) {
 	return file_user_user_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetUserResponse) GetUser() *User {
+func (x *GetMeResponse) GetUser() *User {
 	if x != nil {
 		return x.User
 	}
@@ -113,10 +107,9 @@ func (x *GetUserResponse) GetUser() *User {
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserName      *string                `protobuf:"bytes,2,opt,name=user_name,json=userName,proto3,oneof" json:"user_name,omitempty"`
+	Username      *string                `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	Email         *string                `protobuf:"bytes,3,opt,name=email,proto3,oneof" json:"email,omitempty"`
 	PhoneNumber   *string                `protobuf:"bytes,4,opt,name=phone_number,json=phoneNumber,proto3,oneof" json:"phone_number,omitempty"`
-	GoogleId      *string                `protobuf:"bytes,5,opt,name=google_id,json=googleId,proto3,oneof" json:"google_id,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -159,9 +152,9 @@ func (x *User) GetId() string {
 	return ""
 }
 
-func (x *User) GetUserName() string {
-	if x != nil && x.UserName != nil {
-		return *x.UserName
+func (x *User) GetUsername() string {
+	if x != nil && x.Username != nil {
+		return *x.Username
 	}
 	return ""
 }
@@ -180,13 +173,6 @@ func (x *User) GetPhoneNumber() string {
 	return ""
 }
 
-func (x *User) GetGoogleId() string {
-	if x != nil && x.GoogleId != nil {
-		return *x.GoogleId
-	}
-	return ""
-}
-
 func (x *User) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -198,28 +184,27 @@ var File_user_user_proto protoreflect.FileDescriptor
 
 const file_user_user_proto_rawDesc = "" +
 	"\n" +
-	"\x0fuser/user.proto\x12\x04user\x1a\x1fgoogle/protobuf/timestamp.proto\" \n" +
-	"\x0eGetUserRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"1\n" +
-	"\x0fGetUserResponse\x12\x1e\n" +
+	"\x0fuser/user.proto\x12\x04user\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x0e\n" +
+	"\fGetMeRequest\"/\n" +
+	"\rGetMeResponse\x12\x1e\n" +
 	"\x04user\x18\x01 \x01(\v2\n" +
-	".user.UserR\x04user\"\x8f\x02\n" +
+	".user.UserR\x04user\"\xee\x01\n" +
 	"\x04User\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
-	"\tuser_name\x18\x02 \x01(\tH\x00R\buserName\x88\x01\x01\x12\x19\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\busername\x18\x02 \x01(\tH\x00R\busername\x88\x01\x01\x12\x19\n" +
 	"\x05email\x18\x03 \x01(\tH\x01R\x05email\x88\x01\x01\x12&\n" +
-	"\fphone_number\x18\x04 \x01(\tH\x02R\vphoneNumber\x88\x01\x01\x12 \n" +
-	"\tgoogle_id\x18\x05 \x01(\tH\x03R\bgoogleId\x88\x01\x01\x129\n" +
+	"\fphone_number\x18\x04 \x01(\tH\x02R\vphoneNumber\x88\x01\x01\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtB\f\n" +
-	"\n" +
-	"_user_nameB\b\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtB\v\n" +
+	"\t_usernameB\b\n" +
 	"\x06_emailB\x0f\n" +
-	"\r_phone_numberB\f\n" +
-	"\n" +
-	"_google_id2E\n" +
-	"\vUserService\x126\n" +
-	"\aGetUser\x12\x14.user.GetUserRequest\x1a\x15.user.GetUserResponseB/Z-github.com/Game-WW/gateway-be/gen/user;userpbb\x06proto3"
+	"\r_phone_numberJ\x04\b\x05\x10\x06R\tgoogle_id2\xe3\x02\n" +
+	"\vUserService\x12\xd3\x02\n" +
+	"\x05GetMe\x12\x12.user.GetMeRequest\x1a\x13.user.GetMeResponse\"\xa0\x02\x92A\xfe\x01\x12'Текущий пользователь\x1a;Нужна cookie access_token (ставит /auth/google).Ja\n" +
+	"\x03401\x12Z\n" +
+	"XНет cookie access_token или токен истёк — вызвать /auth/refreshJ3\n" +
+	"\x03404\x12,\n" +
+	"*Пользователь не найден\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/meB/Z-github.com/Game-WW/gateway-be/gen/user;userpbb\x06proto3"
 
 var (
 	file_user_user_proto_rawDescOnce sync.Once
@@ -235,16 +220,16 @@ func file_user_user_proto_rawDescGZIP() []byte {
 
 var file_user_user_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_user_user_proto_goTypes = []any{
-	(*GetUserRequest)(nil),        // 0: user.GetUserRequest
-	(*GetUserResponse)(nil),       // 1: user.GetUserResponse
+	(*GetMeRequest)(nil),          // 0: user.GetMeRequest
+	(*GetMeResponse)(nil),         // 1: user.GetMeResponse
 	(*User)(nil),                  // 2: user.User
 	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
 var file_user_user_proto_depIdxs = []int32{
-	2, // 0: user.GetUserResponse.user:type_name -> user.User
+	2, // 0: user.GetMeResponse.user:type_name -> user.User
 	3, // 1: user.User.created_at:type_name -> google.protobuf.Timestamp
-	0, // 2: user.UserService.GetUser:input_type -> user.GetUserRequest
-	1, // 3: user.UserService.GetUser:output_type -> user.GetUserResponse
+	0, // 2: user.UserService.GetMe:input_type -> user.GetMeRequest
+	1, // 3: user.UserService.GetMe:output_type -> user.GetMeResponse
 	3, // [3:4] is the sub-list for method output_type
 	2, // [2:3] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

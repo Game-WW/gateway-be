@@ -1,0 +1,218 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Chess API",
+    "description": "Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "AuthService",
+      "description": "Токены ходят через metadata, а не через тело:\n  запрос: authorization (Bearer google id_token), x-refresh-token, x-user-agent, x-forwarded-for\n  ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie"
+    },
+    {
+      "name": "UserService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/auth/google": {
+      "post": {
+        "summary": "Вход через Google",
+        "description": "Ставит cookie access_token и refresh_token.",
+        "operationId": "AuthService_AuthGoogle",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authAuthGoogleResponse"
+            }
+          },
+          "401": {
+            "description": "Нет Bearer или невалидный Google id_token",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AuthService"
+        ],
+        "security": [
+          {
+            "GoogleIdToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "summary": "Выход",
+        "description": "Удаляет refresh_token на сервере и очищает обе cookie.",
+        "operationId": "AuthService_Logout",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authLogoutResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "summary": "Обновить access_token",
+        "description": "Нужна cookie refresh_token. Ставит новую cookie access_token.",
+        "operationId": "AuthService_Refresh",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authRefreshResponse"
+            }
+          },
+          "401": {
+            "description": "Нет cookie refresh_token, или токен не найден / истёк",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "summary": "Текущий пользователь",
+        "description": "Нужна cookie access_token (ставит /auth/google).",
+        "operationId": "UserService_GetMe",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/userUser"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк — вызвать /auth/refresh",
+            "schema": {}
+          },
+          "404": {
+            "description": "Пользователь не найден",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "UserService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "authAuthGoogleResponse": {
+      "type": "object"
+    },
+    "authLogoutResponse": {
+      "type": "object"
+    },
+    "authRefreshResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "userGetMeResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/userUser"
+        }
+      }
+    },
+    "userUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "GoogleIdToken": {
+      "type": "apiKey",
+      "description": "Bearer \u003cgoogle id_token\u003e",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}
