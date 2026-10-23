@@ -21,7 +21,6 @@ const (
 )
 
 // forwardCookies превращает токены из metadata ответа сервиса в cookie.
-// secure — только по HTTPS: локально (http://localhost) false, на сервере true.
 func forwardCookies(secure bool) func(context.Context, http.ResponseWriter, proto.Message) error {
 	return func(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
 		md, ok := runtime.ServerMetadataFromContext(ctx)
