@@ -36,7 +36,7 @@ func main() {
 	}
 	defer usersConn.Close()
 
-	mux, err := proxy.NewMux(context.Background(), usersConn)
+	mux, err := proxy.NewMux(context.Background(), usersConn, cfg.CookieSecure)
 	if err != nil {
 		log.Fatalf("fatal: %v", err)
 	}

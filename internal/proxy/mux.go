@@ -25,12 +25,12 @@ var incomingHeaders = map[string]string{
 	"Authorization":               "authorization",
 }
 
-func NewMux(ctx context.Context, usersConn *grpc.ClientConn) (http.Handler, error) {
+func NewMux(ctx context.Context, usersConn *grpc.ClientConn, cookieSecure bool) (http.Handler, error) {
 	mux := runtime.NewServeMux(
 		runtime.WithIncomingHeaderMatcher(headerMatcher),
 		runtime.WithOutgoingHeaderMatcher(dropAll),
 		runtime.WithOutgoingTrailerMatcher(dropAll),
-		runtime.WithForwardResponseOption(forwardCookies),
+		runtime.WithForwardResponseOption(forwardCookies(cookieSecure)),
 		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
 			MarshalOptions: protojson.MarshalOptions{UseProtoNames: true},
 		}),

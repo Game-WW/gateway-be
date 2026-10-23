@@ -11,6 +11,7 @@ type Config struct {
 	JWTSecret      string `env:"JWT_SECRET,required"`
 	UsersGRPCAddr  string `env:"USERS_GRPC_ADDR" envDefault:"127.0.0.1:50051"`
 	AllowedOrigins string `env:"ALLOWED_ORIGINS,required"`
+	CookieSecure   bool   `env:"COOKIE_SECURE"   envDefault:"false"`
 }
 
 func Load() (*Config, error) {
