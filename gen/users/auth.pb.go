@@ -7,6 +7,8 @@
 package userspb
 
 import (
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -21,26 +23,29 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type AuthGoogleRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+type LoginRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Строка, а не proto enum: grpc-gateway разбирает enum в пути только по имени (PROVIDER_GOOGLE)
+	// или номеру — /auth/login/google с enum дал бы 400. Допустимые значения проверяет users-be.
+	Provider      string `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AuthGoogleRequest) Reset() {
-	*x = AuthGoogleRequest{}
+func (x *LoginRequest) Reset() {
+	*x = LoginRequest{}
 	mi := &file_users_auth_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AuthGoogleRequest) String() string {
+func (x *LoginRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AuthGoogleRequest) ProtoMessage() {}
+func (*LoginRequest) ProtoMessage() {}
 
-func (x *AuthGoogleRequest) ProtoReflect() protoreflect.Message {
+func (x *LoginRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_users_auth_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -52,31 +57,38 @@ func (x *AuthGoogleRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AuthGoogleRequest.ProtoReflect.Descriptor instead.
-func (*AuthGoogleRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
+func (*LoginRequest) Descriptor() ([]byte, []int) {
 	return file_users_auth_proto_rawDescGZIP(), []int{0}
 }
 
-type AuthGoogleResponse struct {
+func (x *LoginRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+type LoginResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AuthGoogleResponse) Reset() {
-	*x = AuthGoogleResponse{}
+func (x *LoginResponse) Reset() {
+	*x = LoginResponse{}
 	mi := &file_users_auth_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AuthGoogleResponse) String() string {
+func (x *LoginResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AuthGoogleResponse) ProtoMessage() {}
+func (*LoginResponse) ProtoMessage() {}
 
-func (x *AuthGoogleResponse) ProtoReflect() protoreflect.Message {
+func (x *LoginResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_users_auth_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,8 +100,8 @@ func (x *AuthGoogleResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AuthGoogleResponse.ProtoReflect.Descriptor instead.
-func (*AuthGoogleResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
+func (*LoginResponse) Descriptor() ([]byte, []int) {
 	return file_users_auth_proto_rawDescGZIP(), []int{1}
 }
 
@@ -241,9 +253,10 @@ var File_users_auth_proto protoreflect.FileDescriptor
 
 const file_users_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x10users/auth.proto\x12\x05users\"\x13\n" +
-	"\x11AuthGoogleRequest\"\x14\n" +
-	"\x12AuthGoogleResponse\"\x10\n" +
+	"\x10users/auth.proto\x12\x05users\x1a\x1fgoogle/api/field_behavior.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"j\n" +
+	"\fLoginRequest\x12Z\n" +
+	"\bprovider\x18\x01 \x01(\tB>\x92A725Провайдер, выдавший id_token: google\xe2A\x01\x02R\bprovider\"\x0f\n" +
+	"\rLoginResponse\"\x10\n" +
 	"\x0eRefreshRequest\"\x11\n" +
 	"\x0fRefreshResponse\"\x0f\n" +
 	"\rLogoutRequest\"\x10\n" +
@@ -263,12 +276,12 @@ func file_users_auth_proto_rawDescGZIP() []byte {
 
 var file_users_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_users_auth_proto_goTypes = []any{
-	(*AuthGoogleRequest)(nil),  // 0: users.AuthGoogleRequest
-	(*AuthGoogleResponse)(nil), // 1: users.AuthGoogleResponse
-	(*RefreshRequest)(nil),     // 2: users.RefreshRequest
-	(*RefreshResponse)(nil),    // 3: users.RefreshResponse
-	(*LogoutRequest)(nil),      // 4: users.LogoutRequest
-	(*LogoutResponse)(nil),     // 5: users.LogoutResponse
+	(*LoginRequest)(nil),    // 0: users.LoginRequest
+	(*LoginResponse)(nil),   // 1: users.LoginResponse
+	(*RefreshRequest)(nil),  // 2: users.RefreshRequest
+	(*RefreshResponse)(nil), // 3: users.RefreshResponse
+	(*LogoutRequest)(nil),   // 4: users.LogoutRequest
+	(*LogoutResponse)(nil),  // 5: users.LogoutResponse
 }
 var file_users_auth_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

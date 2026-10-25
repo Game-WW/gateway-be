@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UsersService_AuthGoogle_FullMethodName = "/users.UsersService/AuthGoogle"
-	UsersService_Refresh_FullMethodName    = "/users.UsersService/Refresh"
-	UsersService_Logout_FullMethodName     = "/users.UsersService/Logout"
-	UsersService_GetMe_FullMethodName      = "/users.UsersService/GetMe"
+	UsersService_Login_FullMethodName   = "/users.UsersService/Login"
+	UsersService_Refresh_FullMethodName = "/users.UsersService/Refresh"
+	UsersService_Logout_FullMethodName  = "/users.UsersService/Logout"
+	UsersService_GetMe_FullMethodName   = "/users.UsersService/GetMe"
 )
 
 // UsersServiceClient is the client API for UsersService service.
@@ -31,12 +31,17 @@ const (
 //
 // Токены ходят через metadata, а не через тело:
 //
-//	запрос: x-user-id, authorization (Bearer google id_token), x-refresh-token, x-user-agent, x-forwarded-for
+//	запрос: x-user-id, authorization (Bearer id_token провайдера), x-refresh-token, x-user-agent, x-forwarded-for
 //	ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie
 //
-// Ошибки: у каждой — schema .google.rpc.Status и пример с реальным code/message из users-be.
+// Ошибки: у каждой — schema .google.rpc.Status и пример. message всегда общий по коду (users-be rpc/errors.go):
+//
+//	3 invalid argument, 16 unauthenticated, 5 not found, 13 internal error — подробности только в логах users-be.
 type UsersServiceClient interface {
-	AuthGoogle(ctx context.Context, in *AuthGoogleRequest, opts ...grpc.CallOption) (*AuthGoogleResponse, error)
+	// Один rpc на всех провайдеров с id_token (Google, потом Apple и т.д.).
+	// Путь /auth/login/{provider}, а не /auth/{provider}: иначе он совпал бы с /auth/refresh и /auth/logout,
+	// и grpc-gateway выбирал бы маршрут по порядку rpc в этом файле.
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
@@ -50,10 +55,10 @@ func NewUsersServiceClient(cc grpc.ClientConnInterface) UsersServiceClient {
 	return &usersServiceClient{cc}
 }
 
-func (c *usersServiceClient) AuthGoogle(ctx context.Context, in *AuthGoogleRequest, opts ...grpc.CallOption) (*AuthGoogleResponse, error) {
+func (c *usersServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AuthGoogleResponse)
-	err := c.cc.Invoke(ctx, UsersService_AuthGoogle_FullMethodName, in, out, cOpts...)
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, UsersService_Login_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,12 +101,17 @@ func (c *usersServiceClient) GetMe(ctx context.Context, in *GetMeRequest, opts .
 //
 // Токены ходят через metadata, а не через тело:
 //
-//	запрос: x-user-id, authorization (Bearer google id_token), x-refresh-token, x-user-agent, x-forwarded-for
+//	запрос: x-user-id, authorization (Bearer id_token провайдера), x-refresh-token, x-user-agent, x-forwarded-for
 //	ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie
 //
-// Ошибки: у каждой — schema .google.rpc.Status и пример с реальным code/message из users-be.
+// Ошибки: у каждой — schema .google.rpc.Status и пример. message всегда общий по коду (users-be rpc/errors.go):
+//
+//	3 invalid argument, 16 unauthenticated, 5 not found, 13 internal error — подробности только в логах users-be.
 type UsersServiceServer interface {
-	AuthGoogle(context.Context, *AuthGoogleRequest) (*AuthGoogleResponse, error)
+	// Один rpc на всех провайдеров с id_token (Google, потом Apple и т.д.).
+	// Путь /auth/login/{provider}, а не /auth/{provider}: иначе он совпал бы с /auth/refresh и /auth/logout,
+	// и grpc-gateway выбирал бы маршрут по порядку rpc в этом файле.
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
@@ -115,8 +125,8 @@ type UsersServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedUsersServiceServer struct{}
 
-func (UnimplementedUsersServiceServer) AuthGoogle(context.Context, *AuthGoogleRequest) (*AuthGoogleResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method AuthGoogle not implemented")
+func (UnimplementedUsersServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedUsersServiceServer) Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Refresh not implemented")
@@ -148,20 +158,20 @@ func RegisterUsersServiceServer(s grpc.ServiceRegistrar, srv UsersServiceServer)
 	s.RegisterService(&UsersService_ServiceDesc, srv)
 }
 
-func _UsersService_AuthGoogle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthGoogleRequest)
+func _UsersService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServiceServer).AuthGoogle(ctx, in)
+		return srv.(UsersServiceServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UsersService_AuthGoogle_FullMethodName,
+		FullMethod: UsersService_Login_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).AuthGoogle(ctx, req.(*AuthGoogleRequest))
+		return srv.(UsersServiceServer).Login(ctx, req.(*LoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -228,8 +238,8 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UsersServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AuthGoogle",
-			Handler:    _UsersService_AuthGoogle_Handler,
+			MethodName: "Login",
+			Handler:    _UsersService_Login_Handler,
 		},
 		{
 			MethodName: "Refresh",

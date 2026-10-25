@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Chess API",
-    "description": "Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.\n\nОшибки всегда в одном формате: {\"code\": \u003cgRPC-код\u003e, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.",
+    "description": "Авторизация на cookie: /auth/login/{provider} ставит access_token и refresh_token, дальше браузер шлёт их сам.\n\nОшибки всегда в одном формате: {\"code\": \u003cgRPC-код\u003e, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.",
     "version": "1.0"
   },
   "tags": [
@@ -22,27 +22,40 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/auth/google": {
+    "/api/v1/auth/login/{provider}": {
       "post": {
-        "summary": "Вход через Google",
-        "description": "Ставит cookie access_token и refresh_token.",
-        "operationId": "UsersService_AuthGoogle",
+        "summary": "Вход через внешнего провайдера",
+        "description": "Проверяет id_token провайдера и ставит cookie access_token и refresh_token.",
+        "operationId": "UsersService_Login",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/AuthGoogleResponse"
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "400": {
+            "description": "Неизвестный провайдер",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 3,
+                "message": "invalid argument",
+                "details": []
+              }
             }
           },
           "401": {
-            "description": "Нет Bearer (`bearer token missing`) или невалидный Google id_token (`invalid google token`)",
+            "description": "Нет Bearer или невалидный id_token",
             "schema": {
               "$ref": "#/definitions/Status"
             },
             "examples": {
               "application/json": {
                 "code": 16,
-                "message": "invalid google token",
+                "message": "unauthenticated",
                 "details": []
               }
             }
@@ -55,18 +68,27 @@
             "examples": {
               "application/json": {
                 "code": 13,
-                "message": "auth google failed",
+                "message": "internal error",
                 "details": []
               }
             }
           }
         },
+        "parameters": [
+          {
+            "name": "provider",
+            "description": "Провайдер, выдавший id_token: google",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "tags": [
           "auth"
         ],
         "security": [
           {
-            "GoogleIdToken": []
+            "IdToken": []
           }
         ]
       }
@@ -91,7 +113,7 @@
             "examples": {
               "application/json": {
                 "code": 13,
-                "message": "logout failed",
+                "message": "internal error",
                 "details": []
               }
             }
@@ -115,14 +137,14 @@
             }
           },
           "401": {
-            "description": "Нет cookie refresh_token (`refresh token missing`), или токен не найден / истёк (`refresh token not found`) — нужен вход заново",
+            "description": "Нет cookie refresh_token, или токен не найден / истёк — нужен вход заново",
             "schema": {
               "$ref": "#/definitions/Status"
             },
             "examples": {
               "application/json": {
                 "code": 16,
-                "message": "refresh token not found",
+                "message": "unauthenticated",
                 "details": []
               }
             }
@@ -135,7 +157,7 @@
             "examples": {
               "application/json": {
                 "code": 13,
-                "message": "refresh failed",
+                "message": "internal error",
                 "details": []
               }
             }
@@ -179,7 +201,7 @@
             "examples": {
               "application/json": {
                 "code": 5,
-                "message": "user not found",
+                "message": "not found",
                 "details": []
               }
             }
@@ -192,7 +214,7 @@
             "examples": {
               "application/json": {
                 "code": 13,
-                "message": "get user failed",
+                "message": "internal error",
                 "details": []
               }
             }
@@ -214,9 +236,6 @@
       },
       "additionalProperties": true
     },
-    "AuthGoogleResponse": {
-      "type": "object"
-    },
     "GetMeResponse": {
       "type": "object",
       "properties": {
@@ -224,6 +243,9 @@
           "$ref": "#/definitions/User"
         }
       }
+    },
+    "LoginResponse": {
+      "type": "object"
     },
     "LogoutResponse": {
       "type": "object"
@@ -278,9 +300,9 @@
     }
   },
   "securityDefinitions": {
-    "GoogleIdToken": {
+    "IdToken": {
       "type": "apiKey",
-      "description": "Bearer \u003cgoogle id_token\u003e",
+      "description": "Bearer \u003cid_token провайдера\u003e",
       "name": "Authorization",
       "in": "header"
     }

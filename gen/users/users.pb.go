@@ -26,76 +26,79 @@ var File_users_users_proto protoreflect.FileDescriptor
 
 const file_users_users_proto_rawDesc = "" +
 	"\n" +
-	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x10users/user.proto2\xd4\x12\n" +
-	"\fUsersService\x12\xcf\x04\n" +
-	"\n" +
-	"AuthGoogle\x12\x18.users.AuthGoogleRequest\x1a\x19.users.AuthGoogleResponse\"\x8b\x04\x92A\xec\x03\n" +
-	"\x04auth\x12\x1aВход через Google\x1a2Ставит cookie access_token и refresh_token.J\xe1\x01\n" +
-	"\x03401\x12\xd9\x01\n" +
-	"kНет Bearer (`bearer token missing`) или невалидный Google id_token (`invalid google token`)\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\"R\n" +
-	"\x10application/json\x12>{\"code\": 16, \"message\": \"invalid google token\", \"details\": []}J\x9a\x01\n" +
-	"\x03500\x12\x92\x01\n" +
-	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\"P\n" +
-	"\x10application/json\x12<{\"code\": 13, \"message\": \"auth google failed\", \"details\": []}b\x13\n" +
-	"\x11\n" +
-	"\rGoogleIdToken\x12\x00\x82\xd3\xe4\x93\x02\x15\"\x13/api/v1/auth/google\x12\x8d\x05\n" +
-	"\aRefresh\x12\x15.users.RefreshRequest\x1a\x16.users.RefreshResponse\"\xd2\x04\x92A\xb2\x04\n" +
-	"\x04auth\x12\x1dОбновить access_token\x1aMНужна cookie refresh_token. Ставит новую cookie access_token.J\xa2\x02\n" +
-	"\x03401\x12\x9a\x02\n" +
-	"\xa8\x01Нет cookie refresh_token (`refresh token missing`), или токен не найден / истёк (`refresh token not found`) — нужен вход заново\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\"U\n" +
-	"\x10application/json\x12A{\"code\": 16, \"message\": \"refresh token not found\", \"details\": []}J\x96\x01\n" +
+	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x10users/user.proto2\xb3\x13\n" +
+	"\fUsersService\x12\xf2\x05\n" +
+	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xbd\x05\x92A\x94\x05\n" +
+	"\x04auth\x129Вход через внешнего провайдера\x1afПроверяет id_token провайдера и ставит cookie access_token и refresh_token.J\x9a\x01\n" +
+	"\x03400\x12\x92\x01\n" +
+	")Неизвестный провайдер\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"M\n" +
+	"\x10application/json\x129{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}J\xa3\x01\n" +
+	"\x03401\x12\x9b\x01\n" +
+	"2Нет Bearer или невалидный id_token\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"M\n" +
+	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\x96\x01\n" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"refresh failed\", \"details\": []}\x82\xd3\xe4\x93\x02\x16\"\x14/api/v1/auth/refresh\x12\x81\x03\n" +
-	"\x06Logout\x12\x14.users.LogoutRequest\x1a\x15.users.LogoutResponse\"\xc9\x02\x92A\xaa\x02\n" +
-	"\x04auth\x12\n" +
-	"Выход\x1a~Удаляет refresh_token на сервере и очищает обе cookie. Без cookie тоже отвечает 200.J\x95\x01\n" +
-	"\x03500\x12\x8d\x01\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}b\r\n" +
+	"\v\n" +
+	"\aIdToken\x12\x00\x82\xd3\xe4\x93\x02\x1f\"\x1d/api/v1/auth/login/{provider}\x12\xce\x04\n" +
+	"\aRefresh\x12\x15.users.RefreshRequest\x1a\x16.users.RefreshResponse\"\x93\x04\x92A\xf3\x03\n" +
+	"\x04auth\x12\x1dОбновить access_token\x1aMНужна cookie refresh_token. Ставит новую cookie access_token.J\xe3\x01\n" +
+	"\x03401\x12\xdb\x01\n" +
+	"rНет cookie refresh_token, или токен не найден / истёк — нужен вход заново\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"M\n" +
+	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\x96\x01\n" +
+	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\"K\n" +
-	"\x10application/json\x127{\"code\": 13, \"message\": \"logout failed\", \"details\": []}\x82\xd3\xe4\x93\x02\x15\"\x13/api/v1/auth/logout\x12\xdd\x05\n" +
-	"\x05GetMe\x12\x13.users.GetMeRequest\x1a\x14.users.GetMeResponse\"\xa8\x05\x92A\x86\x05\n" +
+	"\x14\x1a\x12.google.rpc.Status\"L\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x16\"\x14/api/v1/auth/refresh\x12\x82\x03\n" +
+	"\x06Logout\x12\x14.users.LogoutRequest\x1a\x15.users.LogoutResponse\"\xca\x02\x92A\xab\x02\n" +
+	"\x04auth\x12\n" +
+	"Выход\x1a~Удаляет refresh_token на сервере и очищает обе cookie. Без cookie тоже отвечает 200.J\x96\x01\n" +
+	"\x03500\x12\x8e\x01\n" +
+	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"L\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x15\"\x13/api/v1/auth/logout\x12\xd7\x05\n" +
+	"\x05GetMe\x12\x13.users.GetMeRequest\x1a\x14.users.GetMeResponse\"\xa2\x05\x92A\x80\x05\n" +
 	"\x05users\x12'Текущий пользователь\x1a;Нужна cookie access_token (ставит /auth/google).J\xc9\x01\n" +
 	"\x03401\x12\xc1\x01\n" +
 	"XНет cookie access_token или токен истёк — вызвать /auth/refresh\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"M\n" +
-	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\xb0\x01\n" +
-	"\x03404\x12\xa8\x01\n" +
+	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\xab\x01\n" +
+	"\x03404\x12\xa3\x01\n" +
 	"AПользователь из токена удалён из БД\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\"K\n" +
-	"\x10application/json\x127{\"code\": 5, \"message\": \"user not found\", \"details\": []}J\x97\x01\n" +
-	"\x03500\x12\x8f\x01\n" +
+	"\x14\x1a\x12.google.rpc.Status\"F\n" +
+	"\x10application/json\x122{\"code\": 5, \"message\": \"not found\", \"details\": []}J\x96\x01\n" +
+	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\"M\n" +
-	"\x10application/json\x129{\"code\": 13, \"message\": \"get user failed\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/meB\xd9\x04\x92A\xa4\x04\x12\xfb\x02\n" +
-	"\tChess API\x12\xe8\x02Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.\n" +
+	"\x14\x1a\x12.google.rpc.Status\"L\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/meB\xeb\x04\x92A\xb6\x04\x12\x85\x03\n" +
+	"\tChess API\x12\xf2\x02Авторизация на cookie: /auth/login/{provider} ставит access_token и refresh_token, дальше браузер шлёт их сам.\n" +
 	"\n" +
-	"Ошибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.2\x031.0Z@\n" +
-	">\n" +
-	"\rGoogleIdToken\x12-\b\x02\x12\x18Bearer <google id_token>\x1a\rAuthorization \x02j?\n" +
+	"Ошибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.2\x031.0ZH\n" +
+	"F\n" +
+	"\aIdToken\x12;\b\x02\x12&Bearer <id_token провайдера>\x1a\rAuthorization \x02j?\n" +
 	"\x04auth\x127Вход, обновление токена, выходj!\n" +
 	"\x05users\x12\x18ПользователиZ/github.com/Game-WW/gateway-be/gen/users;userspbb\x06proto3"
 
 var file_users_users_proto_goTypes = []any{
-	(*AuthGoogleRequest)(nil),  // 0: users.AuthGoogleRequest
-	(*RefreshRequest)(nil),     // 1: users.RefreshRequest
-	(*LogoutRequest)(nil),      // 2: users.LogoutRequest
-	(*GetMeRequest)(nil),       // 3: users.GetMeRequest
-	(*AuthGoogleResponse)(nil), // 4: users.AuthGoogleResponse
-	(*RefreshResponse)(nil),    // 5: users.RefreshResponse
-	(*LogoutResponse)(nil),     // 6: users.LogoutResponse
-	(*GetMeResponse)(nil),      // 7: users.GetMeResponse
+	(*LoginRequest)(nil),    // 0: users.LoginRequest
+	(*RefreshRequest)(nil),  // 1: users.RefreshRequest
+	(*LogoutRequest)(nil),   // 2: users.LogoutRequest
+	(*GetMeRequest)(nil),    // 3: users.GetMeRequest
+	(*LoginResponse)(nil),   // 4: users.LoginResponse
+	(*RefreshResponse)(nil), // 5: users.RefreshResponse
+	(*LogoutResponse)(nil),  // 6: users.LogoutResponse
+	(*GetMeResponse)(nil),   // 7: users.GetMeResponse
 }
 var file_users_users_proto_depIdxs = []int32{
-	0, // 0: users.UsersService.AuthGoogle:input_type -> users.AuthGoogleRequest
+	0, // 0: users.UsersService.Login:input_type -> users.LoginRequest
 	1, // 1: users.UsersService.Refresh:input_type -> users.RefreshRequest
 	2, // 2: users.UsersService.Logout:input_type -> users.LogoutRequest
 	3, // 3: users.UsersService.GetMe:input_type -> users.GetMeRequest
-	4, // 4: users.UsersService.AuthGoogle:output_type -> users.AuthGoogleResponse
+	4, // 4: users.UsersService.Login:output_type -> users.LoginResponse
 	5, // 5: users.UsersService.Refresh:output_type -> users.RefreshResponse
 	6, // 6: users.UsersService.Logout:output_type -> users.LogoutResponse
 	7, // 7: users.UsersService.GetMe:output_type -> users.GetMeResponse

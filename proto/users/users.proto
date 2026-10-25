@@ -14,7 +14,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Chess API"
     version: "1.0"
-    description: "Авторизация на cookie: /auth/google ставит access_token и refresh_token, дальше браузер шлёт их сам.\n\nОшибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов."
+    description: "Авторизация на cookie: /auth/login/{provider} ставит access_token и refresh_token, дальше браузер шлёт их сам.\n\nОшибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов."
   }
   tags: {
     name: "auth"
@@ -26,43 +26,58 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
   security_definitions: {
     security: {
-      key: "GoogleIdToken"
+      key: "IdToken"
       value: {
         type: TYPE_API_KEY
         in: IN_HEADER
         name: "Authorization"
-        description: "Bearer <google id_token>"
+        description: "Bearer <id_token провайдера>"
       }
     }
   }
 };
 
 // Токены ходят через metadata, а не через тело:
-//   запрос: x-user-id, authorization (Bearer google id_token), x-refresh-token, x-user-agent, x-forwarded-for
+//   запрос: x-user-id, authorization (Bearer id_token провайдера), x-refresh-token, x-user-agent, x-forwarded-for
 //   ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie
 //
-// Ошибки: у каждой — schema .google.rpc.Status и пример с реальным code/message из users-be.
+// Ошибки: у каждой — schema .google.rpc.Status и пример. message всегда общий по коду (users-be rpc/errors.go):
+//   3 invalid argument, 16 unauthenticated, 5 not found, 13 internal error — подробности только в логах users-be.
 service UsersService {
-  rpc AuthGoogle(AuthGoogleRequest) returns (AuthGoogleResponse) {
-    option (google.api.http) = {post: "/api/v1/auth/google"};
+  // Один rpc на всех провайдеров с id_token (Google, потом Apple и т.д.).
+  // Путь /auth/login/{provider}, а не /auth/{provider}: иначе он совпал бы с /auth/refresh и /auth/logout,
+  // и grpc-gateway выбирал бы маршрут по порядку rpc в этом файле.
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {post: "/api/v1/auth/login/{provider}"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "auth"
-      summary: "Вход через Google"
-      description: "Ставит cookie access_token и refresh_token."
+      summary: "Вход через внешнего провайдера"
+      description: "Проверяет id_token провайдера и ставит cookie access_token и refresh_token."
       security: {
         security_requirement: {
-          key: "GoogleIdToken"
+          key: "IdToken"
           value: {}
+        }
+      }
+      responses: {
+        key: "400"
+        value: {
+          description: "Неизвестный провайдер"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}"
+          }
         }
       }
       responses: {
         key: "401"
         value: {
-          description: "Нет Bearer (`bearer token missing`) или невалидный Google id_token (`invalid google token`)"
+          description: "Нет Bearer или невалидный id_token"
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
-            value: "{\"code\": 16, \"message\": \"invalid google token\", \"details\": []}"
+            value: "{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}"
           }
         }
       }
@@ -73,7 +88,7 @@ service UsersService {
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
-            value: "{\"code\": 13, \"message\": \"auth google failed\", \"details\": []}"
+            value: "{\"code\": 13, \"message\": \"internal error\", \"details\": []}"
           }
         }
       }
@@ -89,11 +104,11 @@ service UsersService {
       responses: {
         key: "401"
         value: {
-          description: "Нет cookie refresh_token (`refresh token missing`), или токен не найден / истёк (`refresh token not found`) — нужен вход заново"
+          description: "Нет cookie refresh_token, или токен не найден / истёк — нужен вход заново"
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
-            value: "{\"code\": 16, \"message\": \"refresh token not found\", \"details\": []}"
+            value: "{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}"
           }
         }
       }
@@ -104,7 +119,7 @@ service UsersService {
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
-            value: "{\"code\": 13, \"message\": \"refresh failed\", \"details\": []}"
+            value: "{\"code\": 13, \"message\": \"internal error\", \"details\": []}"
           }
         }
       }
@@ -124,7 +139,7 @@ service UsersService {
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
-            value: "{\"code\": 13, \"message\": \"logout failed\", \"details\": []}"
+            value: "{\"code\": 13, \"message\": \"internal error\", \"details\": []}"
           }
         }
       }
@@ -158,7 +173,7 @@ service UsersService {
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
-            value: "{\"code\": 5, \"message\": \"user not found\", \"details\": []}"
+            value: "{\"code\": 5, \"message\": \"not found\", \"details\": []}"
           }
         }
       }
@@ -169,7 +184,7 @@ service UsersService {
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
-            value: "{\"code\": 13, \"message\": \"get user failed\", \"details\": []}"
+            value: "{\"code\": 13, \"message\": \"internal error\", \"details\": []}"
           }
         }
       }
