@@ -26,7 +26,7 @@ var File_users_users_proto protoreflect.FileDescriptor
 
 const file_users_users_proto_rawDesc = "" +
 	"\n" +
-	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x10users/user.proto2\xb3\x13\n" +
+	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xb9)\n" +
 	"\fUsersService\x12\xf2\x05\n" +
 	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xbd\x05\x92A\x94\x05\n" +
 	"\x04auth\x129Вход через внешнего провайдера\x1afПроверяет id_token провайдера и ставит cookie access_token и refresh_token.J\x9a\x01\n" +
@@ -74,39 +74,97 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/meB\xeb\x04\x92A\xb6\x04\x12\x85\x03\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/me\x12\x9a\x05\n" +
+	"\x0eListIdentities\x12\x1c.users.ListIdentitiesRequest\x1a\x1d.users.ListIdentitiesResponse\"\xca\x04\x92A\xac\x04\n" +
+	"\bidentity\x12\x19Способы входа\x1a\x9f\x01Все включённые провайдеры и уже привязанные. linked = true — можно отвязать, false — привязать.J\xc9\x01\n" +
+	"\x03401\x12\xc1\x01\n" +
+	"XНет cookie access_token или токен истёк — вызвать /auth/refresh\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"M\n" +
+	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\x96\x01\n" +
+	"\x03500\x12\x8e\x01\n" +
+	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"L\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x14\x12\x12/api/v1/identities\x12\x81\n" +
+	"\n" +
+	"\fLinkIdentity\x12\x1a.users.LinkIdentityRequest\x1a\x1b.users.LinkIdentityResponse\"\xb7\t\x92A\x84\t\n" +
+	"\bidentity\x12*Привязать способ входа\x1a\xd3\x01Нужны cookie access_token (кто привязывает) и Bearer id_token провайдера (что привязываем). Повторная привязка того же аккаунта — 200.J\xb8\x01\n" +
+	"\x03400\x12\xb0\x01\n" +
+	"GНеизвестный или выключенный провайдер\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"M\n" +
+	"\x10application/json\x129{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}J\xbf\x01\n" +
+	"\x03401\x12\xb7\x01\n" +
+	"NНет cookie access_token, нет Bearer или невалидный id_token\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"M\n" +
+	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\xd0\x02\n" +
+	"\x03409\x12\xc8\x02\n" +
+	"\xe0\x01Этот аккаунт провайдера привязан к другому пользователю, или у пользователя уже привязан другой аккаунт этого провайдера\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"K\n" +
+	"\x10application/json\x127{\"code\": 6, \"message\": \"already exists\", \"details\": []}J\x96\x01\n" +
+	"\x03500\x12\x8e\x01\n" +
+	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"L\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}b\r\n" +
+	"\v\n" +
+	"\aIdToken\x12\x00\x82\xd3\xe4\x93\x02)b\bidentity\"\x1d/api/v1/identities/{provider}\x12\xe2\x06\n" +
+	"\x0eUnlinkIdentity\x12\x1c.users.UnlinkIdentityRequest\x1a\x1d.users.UnlinkIdentityResponse\"\x92\x06\x92A\xe9\x05\n" +
+	"\bidentity\x12(Отвязать способ входа\x1acНужна cookie access_token. Если провайдер не привязан — тоже 200.J\xe8\x01\n" +
+	"\x03400\x12\xe0\x01\n" +
+	"tНеизвестный провайдер (code 3) или это последний способ входа (code 9)\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"P\n" +
+	"\x10application/json\x12<{\"code\": 9, \"message\": \"failed precondition\", \"details\": []}J\xc9\x01\n" +
+	"\x03401\x12\xc1\x01\n" +
+	"XНет cookie access_token или токен истёк — вызвать /auth/refresh\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"M\n" +
+	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\x96\x01\n" +
+	"\x03500\x12\x8e\x01\n" +
+	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\"L\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x1f*\x1d/api/v1/identities/{provider}B\xdb\x05\x92A\xa6\x05\x12\x85\x03\n" +
 	"\tChess API\x12\xf2\x02Авторизация на cookie: /auth/login/{provider} ставит access_token и refresh_token, дальше браузер шлёт их сам.\n" +
 	"\n" +
 	"Ошибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.2\x031.0ZH\n" +
 	"F\n" +
 	"\aIdToken\x12;\b\x02\x12&Bearer <id_token провайдера>\x1a\rAuthorization \x02j?\n" +
 	"\x04auth\x127Вход, обновление токена, выходj!\n" +
-	"\x05users\x12\x18ПользователиZ/github.com/Game-WW/gateway-be/gen/users;userspbb\x06proto3"
+	"\x05users\x12\x18Пользователиjn\n" +
+	"\bidentity\x12bСпособы входа пользователя: список, привязка, отвязкаZ/github.com/Game-WW/gateway-be/gen/users;userspbb\x06proto3"
 
 var file_users_users_proto_goTypes = []any{
-	(*LoginRequest)(nil),    // 0: users.LoginRequest
-	(*RefreshRequest)(nil),  // 1: users.RefreshRequest
-	(*LogoutRequest)(nil),   // 2: users.LogoutRequest
-	(*GetMeRequest)(nil),    // 3: users.GetMeRequest
-	(*LoginResponse)(nil),   // 4: users.LoginResponse
-	(*RefreshResponse)(nil), // 5: users.RefreshResponse
-	(*LogoutResponse)(nil),  // 6: users.LogoutResponse
-	(*GetMeResponse)(nil),   // 7: users.GetMeResponse
+	(*LoginRequest)(nil),           // 0: users.LoginRequest
+	(*RefreshRequest)(nil),         // 1: users.RefreshRequest
+	(*LogoutRequest)(nil),          // 2: users.LogoutRequest
+	(*GetMeRequest)(nil),           // 3: users.GetMeRequest
+	(*ListIdentitiesRequest)(nil),  // 4: users.ListIdentitiesRequest
+	(*LinkIdentityRequest)(nil),    // 5: users.LinkIdentityRequest
+	(*UnlinkIdentityRequest)(nil),  // 6: users.UnlinkIdentityRequest
+	(*LoginResponse)(nil),          // 7: users.LoginResponse
+	(*RefreshResponse)(nil),        // 8: users.RefreshResponse
+	(*LogoutResponse)(nil),         // 9: users.LogoutResponse
+	(*GetMeResponse)(nil),          // 10: users.GetMeResponse
+	(*ListIdentitiesResponse)(nil), // 11: users.ListIdentitiesResponse
+	(*LinkIdentityResponse)(nil),   // 12: users.LinkIdentityResponse
+	(*UnlinkIdentityResponse)(nil), // 13: users.UnlinkIdentityResponse
 }
 var file_users_users_proto_depIdxs = []int32{
-	0, // 0: users.UsersService.Login:input_type -> users.LoginRequest
-	1, // 1: users.UsersService.Refresh:input_type -> users.RefreshRequest
-	2, // 2: users.UsersService.Logout:input_type -> users.LogoutRequest
-	3, // 3: users.UsersService.GetMe:input_type -> users.GetMeRequest
-	4, // 4: users.UsersService.Login:output_type -> users.LoginResponse
-	5, // 5: users.UsersService.Refresh:output_type -> users.RefreshResponse
-	6, // 6: users.UsersService.Logout:output_type -> users.LogoutResponse
-	7, // 7: users.UsersService.GetMe:output_type -> users.GetMeResponse
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: users.UsersService.Login:input_type -> users.LoginRequest
+	1,  // 1: users.UsersService.Refresh:input_type -> users.RefreshRequest
+	2,  // 2: users.UsersService.Logout:input_type -> users.LogoutRequest
+	3,  // 3: users.UsersService.GetMe:input_type -> users.GetMeRequest
+	4,  // 4: users.UsersService.ListIdentities:input_type -> users.ListIdentitiesRequest
+	5,  // 5: users.UsersService.LinkIdentity:input_type -> users.LinkIdentityRequest
+	6,  // 6: users.UsersService.UnlinkIdentity:input_type -> users.UnlinkIdentityRequest
+	7,  // 7: users.UsersService.Login:output_type -> users.LoginResponse
+	8,  // 8: users.UsersService.Refresh:output_type -> users.RefreshResponse
+	9,  // 9: users.UsersService.Logout:output_type -> users.LogoutResponse
+	10, // 10: users.UsersService.GetMe:output_type -> users.GetMeResponse
+	11, // 11: users.UsersService.ListIdentities:output_type -> users.ListIdentitiesResponse
+	12, // 12: users.UsersService.LinkIdentity:output_type -> users.LinkIdentityResponse
+	13, // 13: users.UsersService.UnlinkIdentity:output_type -> users.UnlinkIdentityResponse
+	7,  // [7:14] is the sub-list for method output_type
+	0,  // [0:7] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_users_users_proto_init() }
@@ -115,6 +173,7 @@ func file_users_users_proto_init() {
 		return
 	}
 	file_users_auth_proto_init()
+	file_users_identity_proto_init()
 	file_users_user_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{

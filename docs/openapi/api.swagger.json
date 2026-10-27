@@ -13,6 +13,10 @@
     {
       "name": "users",
       "description": "Пользователи"
+    },
+    {
+      "name": "identity",
+      "description": "Способы входа пользователя: список, привязка, отвязка"
     }
   ],
   "consumes": [
@@ -168,6 +172,201 @@
         ]
       }
     },
+    "/api/v1/identities": {
+      "get": {
+        "summary": "Способы входа",
+        "description": "Все включённые провайдеры и уже привязанные. linked = true — можно отвязать, false — привязать.",
+        "operationId": "UsersService_ListIdentities",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListIdentitiesResponse"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк — вызвать /auth/refresh",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "unauthenticated",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "internal error",
+                "details": []
+              }
+            }
+          }
+        },
+        "tags": [
+          "identity"
+        ]
+      }
+    },
+    "/api/v1/identities/{provider}": {
+      "delete": {
+        "summary": "Отвязать способ входа",
+        "description": "Нужна cookie access_token. Если провайдер не привязан — тоже 200.",
+        "operationId": "UsersService_UnlinkIdentity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UnlinkIdentityResponse"
+            }
+          },
+          "400": {
+            "description": "Неизвестный провайдер (code 3) или это последний способ входа (code 9)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 9,
+                "message": "failed precondition",
+                "details": []
+              }
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк — вызвать /auth/refresh",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "unauthenticated",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "internal error",
+                "details": []
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "provider",
+            "description": "Провайдер, который отвязать: google",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "identity"
+        ]
+      },
+      "post": {
+        "summary": "Привязать способ входа",
+        "description": "Нужны cookie access_token (кто привязывает) и Bearer id_token провайдера (что привязываем). Повторная привязка того же аккаунта — 200.",
+        "operationId": "UsersService_LinkIdentity",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Identity",
+              "required": [
+                "identity"
+              ]
+            }
+          },
+          "400": {
+            "description": "Неизвестный или выключенный провайдер",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 3,
+                "message": "invalid argument",
+                "details": []
+              }
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token, нет Bearer или невалидный id_token",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 16,
+                "message": "unauthenticated",
+                "details": []
+              }
+            }
+          },
+          "409": {
+            "description": "Этот аккаунт провайдера привязан к другому пользователю, или у пользователя уже привязан другой аккаунт этого провайдера",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 6,
+                "message": "already exists",
+                "details": []
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            },
+            "examples": {
+              "application/json": {
+                "code": 13,
+                "message": "internal error",
+                "details": []
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "provider",
+            "description": "Провайдер, выдавший id_token: google",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "identity"
+        ],
+        "security": [
+          {
+            "IdToken": []
+          }
+        ]
+      }
+    },
     "/api/v1/users/me": {
       "get": {
         "summary": "Текущий пользователь",
@@ -244,6 +443,51 @@
         }
       }
     },
+    "Identity": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "linked": {
+          "type": "boolean"
+        },
+        "email": {
+          "type": "string"
+        },
+        "linked_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "provider",
+        "linked"
+      ]
+    },
+    "LinkIdentityResponse": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/definitions/Identity"
+        }
+      },
+      "required": [
+        "identity"
+      ]
+    },
+    "ListIdentitiesResponse": {
+      "type": "object",
+      "properties": {
+        "identities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Identity"
+          }
+        }
+      }
+    },
     "LoginResponse": {
       "type": "object"
     },
@@ -272,6 +516,9 @@
         }
       }
     },
+    "UnlinkIdentityResponse": {
+      "type": "object"
+    },
     "User": {
       "type": "object",
       "properties": {
@@ -292,7 +539,6 @@
           "format": "date-time"
         }
       },
-      "description": "Пользователь.",
       "required": [
         "id",
         "created_at"

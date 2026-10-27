@@ -19,32 +19,26 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UsersService_Login_FullMethodName   = "/users.UsersService/Login"
-	UsersService_Refresh_FullMethodName = "/users.UsersService/Refresh"
-	UsersService_Logout_FullMethodName  = "/users.UsersService/Logout"
-	UsersService_GetMe_FullMethodName   = "/users.UsersService/GetMe"
+	UsersService_Login_FullMethodName          = "/users.UsersService/Login"
+	UsersService_Refresh_FullMethodName        = "/users.UsersService/Refresh"
+	UsersService_Logout_FullMethodName         = "/users.UsersService/Logout"
+	UsersService_GetMe_FullMethodName          = "/users.UsersService/GetMe"
+	UsersService_ListIdentities_FullMethodName = "/users.UsersService/ListIdentities"
+	UsersService_LinkIdentity_FullMethodName   = "/users.UsersService/LinkIdentity"
+	UsersService_UnlinkIdentity_FullMethodName = "/users.UsersService/UnlinkIdentity"
 )
 
 // UsersServiceClient is the client API for UsersService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// Токены ходят через metadata, а не через тело:
-//
-//	запрос: x-user-id, authorization (Bearer id_token провайдера), x-refresh-token, x-user-agent, x-forwarded-for
-//	ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie
-//
-// Ошибки: у каждой — schema .google.rpc.Status и пример. message всегда общий по коду (users-be rpc/errors.go):
-//
-//	3 invalid argument, 16 unauthenticated, 5 not found, 13 internal error — подробности только в логах users-be.
 type UsersServiceClient interface {
-	// Один rpc на всех провайдеров с id_token (Google, потом Apple и т.д.).
-	// Путь /auth/login/{provider}, а не /auth/{provider}: иначе он совпал бы с /auth/refresh и /auth/logout,
-	// и grpc-gateway выбирал бы маршрут по порядку rpc в этом файле.
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
+	ListIdentities(ctx context.Context, in *ListIdentitiesRequest, opts ...grpc.CallOption) (*ListIdentitiesResponse, error)
+	LinkIdentity(ctx context.Context, in *LinkIdentityRequest, opts ...grpc.CallOption) (*LinkIdentityResponse, error)
+	UnlinkIdentity(ctx context.Context, in *UnlinkIdentityRequest, opts ...grpc.CallOption) (*UnlinkIdentityResponse, error)
 }
 
 type usersServiceClient struct {
@@ -95,26 +89,47 @@ func (c *usersServiceClient) GetMe(ctx context.Context, in *GetMeRequest, opts .
 	return out, nil
 }
 
+func (c *usersServiceClient) ListIdentities(ctx context.Context, in *ListIdentitiesRequest, opts ...grpc.CallOption) (*ListIdentitiesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListIdentitiesResponse)
+	err := c.cc.Invoke(ctx, UsersService_ListIdentities_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) LinkIdentity(ctx context.Context, in *LinkIdentityRequest, opts ...grpc.CallOption) (*LinkIdentityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LinkIdentityResponse)
+	err := c.cc.Invoke(ctx, UsersService_LinkIdentity_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) UnlinkIdentity(ctx context.Context, in *UnlinkIdentityRequest, opts ...grpc.CallOption) (*UnlinkIdentityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnlinkIdentityResponse)
+	err := c.cc.Invoke(ctx, UsersService_UnlinkIdentity_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServiceServer is the server API for UsersService service.
 // All implementations must embed UnimplementedUsersServiceServer
 // for forward compatibility.
-//
-// Токены ходят через metadata, а не через тело:
-//
-//	запрос: x-user-id, authorization (Bearer id_token провайдера), x-refresh-token, x-user-agent, x-forwarded-for
-//	ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie
-//
-// Ошибки: у каждой — schema .google.rpc.Status и пример. message всегда общий по коду (users-be rpc/errors.go):
-//
-//	3 invalid argument, 16 unauthenticated, 5 not found, 13 internal error — подробности только в логах users-be.
 type UsersServiceServer interface {
-	// Один rpc на всех провайдеров с id_token (Google, потом Apple и т.д.).
-	// Путь /auth/login/{provider}, а не /auth/{provider}: иначе он совпал бы с /auth/refresh и /auth/logout,
-	// и grpc-gateway выбирал бы маршрут по порядку rpc в этом файле.
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
+	ListIdentities(context.Context, *ListIdentitiesRequest) (*ListIdentitiesResponse, error)
+	LinkIdentity(context.Context, *LinkIdentityRequest) (*LinkIdentityResponse, error)
+	UnlinkIdentity(context.Context, *UnlinkIdentityRequest) (*UnlinkIdentityResponse, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
 
@@ -136,6 +151,15 @@ func (UnimplementedUsersServiceServer) Logout(context.Context, *LogoutRequest) (
 }
 func (UnimplementedUsersServiceServer) GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMe not implemented")
+}
+func (UnimplementedUsersServiceServer) ListIdentities(context.Context, *ListIdentitiesRequest) (*ListIdentitiesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListIdentities not implemented")
+}
+func (UnimplementedUsersServiceServer) LinkIdentity(context.Context, *LinkIdentityRequest) (*LinkIdentityResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method LinkIdentity not implemented")
+}
+func (UnimplementedUsersServiceServer) UnlinkIdentity(context.Context, *UnlinkIdentityRequest) (*UnlinkIdentityResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UnlinkIdentity not implemented")
 }
 func (UnimplementedUsersServiceServer) mustEmbedUnimplementedUsersServiceServer() {}
 func (UnimplementedUsersServiceServer) testEmbeddedByValue()                      {}
@@ -230,6 +254,60 @@ func _UsersService_GetMe_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_ListIdentities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListIdentitiesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).ListIdentities(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_ListIdentities_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).ListIdentities(ctx, req.(*ListIdentitiesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersService_LinkIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinkIdentityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).LinkIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_LinkIdentity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).LinkIdentity(ctx, req.(*LinkIdentityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersService_UnlinkIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnlinkIdentityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).UnlinkIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_UnlinkIdentity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).UnlinkIdentity(ctx, req.(*UnlinkIdentityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UsersService_ServiceDesc is the grpc.ServiceDesc for UsersService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -252,6 +330,18 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMe",
 			Handler:    _UsersService_GetMe_Handler,
+		},
+		{
+			MethodName: "ListIdentities",
+			Handler:    _UsersService_ListIdentities_Handler,
+		},
+		{
+			MethodName: "LinkIdentity",
+			Handler:    _UsersService_LinkIdentity_Handler,
+		},
+		{
+			MethodName: "UnlinkIdentity",
+			Handler:    _UsersService_UnlinkIdentity_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -103,7 +103,6 @@ func (x *GetMeResponse) GetUser() *User {
 	return nil
 }
 
-// Пользователь.
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`

@@ -24,10 +24,8 @@ const (
 )
 
 type LoginRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Строка, а не proto enum: grpc-gateway разбирает enum в пути только по имени (PROVIDER_GOOGLE)
-	// или номеру — /auth/login/google с enum дал бы 400. Допустимые значения проверяет users-be.
-	Provider      string `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Provider      string                 `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

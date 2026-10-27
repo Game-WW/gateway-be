@@ -7,11 +7,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
 
-// Токены в сообщениях не ходят — только через metadata (см. UsersService в users.proto).
-
 message LoginRequest {
-  // Строка, а не proto enum: grpc-gateway разбирает enum в пути только по имени (PROVIDER_GOOGLE)
-  // или номеру — /auth/login/google с enum дал бы 400. Допустимые значения проверяет users-be.
   string provider = 1 [
     (google.api.field_behavior) = REQUIRED,
     // enum для параметра пути генератор Swagger не переносит — значения перечислены в description.

@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package users;
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
+
+message ListIdentitiesRequest {}
+
+message ListIdentitiesResponse {
+  repeated Identity identities = 1;
+}
+
+message LinkIdentityRequest {
+  string provider = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Провайдер, выдавший id_token: google"}
+  ];
+}
+
+message LinkIdentityResponse {
+  Identity identity = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UnlinkIdentityRequest {
+  string provider = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Провайдер, который отвязать: google"}
+  ];
+}
+
+message UnlinkIdentityResponse {}
+
+message Identity {
+  string provider = 1 [(google.api.field_behavior) = REQUIRED];
+  bool linked = 2 [(google.api.field_behavior) = REQUIRED];
+  optional string email = 3;
+  optional google.protobuf.Timestamp linked_at = 4;
+}

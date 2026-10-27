@@ -5,11 +5,11 @@ package users;
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "users/auth.proto";
+import "users/identity.proto";
 import "users/user.proto";
 
 option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
 
-// Общая шапка Swagger — для всего API, все proto сливаются в один файл (allow_merge).
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Chess API"
@@ -24,6 +24,10 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     name: "users"
     description: "Пользователи"
   }
+  tags: {
+    name: "identity"
+    description: "Способы входа пользователя: список, привязка, отвязка"
+  }
   security_definitions: {
     security: {
       key: "IdToken"
@@ -37,16 +41,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
 };
 
-// Токены ходят через metadata, а не через тело:
-//   запрос: x-user-id, authorization (Bearer id_token провайдера), x-refresh-token, x-user-agent, x-forwarded-for
-//   ответ:  x-access-token, x-refresh-token, x-logout — gateway превращает их в cookie
-//
-// Ошибки: у каждой — schema .google.rpc.Status и пример. message всегда общий по коду (users-be rpc/errors.go):
-//   3 invalid argument, 16 unauthenticated, 5 not found, 13 internal error — подробности только в логах users-be.
 service UsersService {
-  // Один rpc на всех провайдеров с id_token (Google, потом Apple и т.д.).
-  // Путь /auth/login/{provider}, а не /auth/{provider}: иначе он совпал бы с /auth/refresh и /auth/logout,
-  // и grpc-gateway выбирал бы маршрут по порядку rpc в этом файле.
   rpc Login(LoginRequest) returns (LoginResponse) {
     option (google.api.http) = {post: "/api/v1/auth/login/{provider}"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -174,6 +169,141 @@ service UsersService {
           examples: {
             key: "application/json"
             value: "{\"code\": 5, \"message\": \"not found\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 13, \"message\": \"internal error\", \"details\": []}"
+          }
+        }
+      }
+    };
+  }
+
+  rpc ListIdentities(ListIdentitiesRequest) returns (ListIdentitiesResponse) {
+    option (google.api.http) = {get: "/api/v1/identities"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "identity"
+      summary: "Способы входа"
+      description: "Все включённые провайдеры и уже привязанные. linked = true — можно отвязать, false — привязать."
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк — вызвать /auth/refresh"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 13, \"message\": \"internal error\", \"details\": []}"
+          }
+        }
+      }
+    };
+  }
+
+  rpc LinkIdentity(LinkIdentityRequest) returns (LinkIdentityResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/identities/{provider}"
+      response_body: "identity"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "identity"
+      summary: "Привязать способ входа"
+      description: "Нужны cookie access_token (кто привязывает) и Bearer id_token провайдера (что привязываем). Повторная привязка того же аккаунта — 200."
+      security: {
+        security_requirement: {
+          key: "IdToken"
+          value: {}
+        }
+      }
+      responses: {
+        key: "400"
+        value: {
+          description: "Неизвестный или выключенный провайдер"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token, нет Bearer или невалидный id_token"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "409"
+        value: {
+          description: "Этот аккаунт провайдера привязан к другому пользователю, или у пользователя уже привязан другой аккаунт этого провайдера"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 6, \"message\": \"already exists\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 13, \"message\": \"internal error\", \"details\": []}"
+          }
+        }
+      }
+    };
+  }
+
+  rpc UnlinkIdentity(UnlinkIdentityRequest) returns (UnlinkIdentityResponse) {
+    option (google.api.http) = {delete: "/api/v1/identities/{provider}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "identity"
+      summary: "Отвязать способ входа"
+      description: "Нужна cookie access_token. Если провайдер не привязан — тоже 200."
+      responses: {
+        key: "400"
+        value: {
+          description: "Неизвестный провайдер (code 3) или это последний способ входа (code 9)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 9, \"message\": \"failed precondition\", \"details\": []}"
+          }
+        }
+      }
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк — вызвать /auth/refresh"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+          examples: {
+            key: "application/json"
+            value: "{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}"
           }
         }
       }
