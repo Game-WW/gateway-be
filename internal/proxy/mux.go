@@ -23,6 +23,7 @@ var incomingHeaders = map[string]string{
 	middleware.UserAgentHeader:    "x-user-agent",
 	middleware.RefreshTokenHeader: refreshTokenMetaKey,
 	"Authorization":               "authorization",
+	"X-Auth-Code":                 "x-auth-code",
 }
 
 func NewMux(ctx context.Context, usersConn *grpc.ClientConn, cookieSecure bool) (http.Handler, error) {
