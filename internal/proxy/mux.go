@@ -24,6 +24,7 @@ var incomingHeaders = map[string]string{
 	middleware.RefreshTokenHeader: refreshTokenMetaKey,
 	"Authorization":               "authorization",
 	"X-Auth-Code":                 "x-auth-code",
+	"X-Code-Verifier":             "x-code-verifier",
 }
 
 func NewMux(ctx context.Context, usersConn *grpc.ClientConn, cookieSecure bool) (http.Handler, error) {
