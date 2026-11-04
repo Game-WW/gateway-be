@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/caarlos0/env/v11"
 )
@@ -11,7 +13,7 @@ type Config struct {
 	JWTSecret      string `env:"JWT_SECRET,required"`
 	UsersGRPCAddr  string `env:"USERS_GRPC_ADDR" envDefault:"127.0.0.1:50051"`
 	AllowedOrigins string `env:"ALLOWED_ORIGINS,required"`
-	CookieSecure   bool   `env:"COOKIE_SECURE"   envDefault:"false"`
+	CookieSecure   bool   `env:"COOKIE_SECURE"   envDefault:"true"`
 }
 
 func Load() (*Config, error) {
@@ -39,6 +41,15 @@ func (c *Config) Validate() error {
 	}
 	if c.AllowedOrigins == "" {
 		return fmt.Errorf("config: ALLOWED_ORIGINS is required")
+	}
+	for _, origin := range strings.Split(c.AllowedOrigins, ",") {
+		origin = strings.TrimSpace(origin)
+		parsed, err := url.Parse(origin)
+		if err != nil || parsed.Host == "" || strings.Contains(parsed.Host, "*") ||
+			(parsed.Scheme != "http" && parsed.Scheme != "https") ||
+			parsed.User != nil || parsed.Path != "" || parsed.RawQuery != "" || parsed.Fragment != "" {
+			return fmt.Errorf("config: invalid ALLOWED_ORIGINS entry %q; expected an http(s) origin without a path", origin)
+		}
 	}
 
 	return nil
