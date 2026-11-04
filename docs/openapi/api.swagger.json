@@ -582,7 +582,8 @@
           "type": "string"
         },
         "show_online_status": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Если поле не передано, настройка не изменяется."
         }
       }
     },
@@ -601,12 +602,6 @@
           "type": "string"
         },
         "nickname": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phone_number": {
           "type": "string"
         },
         "created_at": {

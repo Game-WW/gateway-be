@@ -4,6 +4,7 @@ package users;
 
 import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
 
@@ -14,24 +15,23 @@ message GetMeResponse {
 }
 
 message User {
-  reserved 5;
-  reserved "google_id";
-
   string id = 1 [(google.api.field_behavior) = REQUIRED];
   optional string nickname = 2;
-  optional string email = 3;
-  optional string phone_number = 4;
-  google.protobuf.Timestamp created_at = 6 [(google.api.field_behavior) = REQUIRED];
-  optional string avatar_url = 7;
-  optional string location = 8;
-  optional bool show_online_status = 9;
+  google.protobuf.Timestamp created_at = 3 [(google.api.field_behavior) = REQUIRED];
+  optional string avatar_url = 4;
+  optional string location = 5;
+  optional bool show_online_status = 6;
 }
 
 message UpdateProfileRequest {
   optional string nickname = 1;
   optional string avatar_url = 2;
   optional string location = 3;
-  optional bool show_online_status = 4;
+  optional bool show_online_status = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Если поле не передано, настройка не изменяется."
+    }
+  ];
 }
 
 message UpdateProfileResponse {

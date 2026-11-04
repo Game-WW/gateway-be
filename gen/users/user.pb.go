@@ -7,6 +7,7 @@
 package userspb
 
 import (
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -107,12 +108,10 @@ type User struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Nickname         *string                `protobuf:"bytes,2,opt,name=nickname,proto3,oneof" json:"nickname,omitempty"`
-	Email            *string                `protobuf:"bytes,3,opt,name=email,proto3,oneof" json:"email,omitempty"`
-	PhoneNumber      *string                `protobuf:"bytes,4,opt,name=phone_number,json=phoneNumber,proto3,oneof" json:"phone_number,omitempty"`
-	CreatedAt        *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	AvatarUrl        *string                `protobuf:"bytes,7,opt,name=avatar_url,json=avatarUrl,proto3,oneof" json:"avatar_url,omitempty"`
-	Location         *string                `protobuf:"bytes,8,opt,name=location,proto3,oneof" json:"location,omitempty"`
-	ShowOnlineStatus *bool                  `protobuf:"varint,9,opt,name=show_online_status,json=showOnlineStatus,proto3,oneof" json:"show_online_status,omitempty"`
+	CreatedAt        *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	AvatarUrl        *string                `protobuf:"bytes,4,opt,name=avatar_url,json=avatarUrl,proto3,oneof" json:"avatar_url,omitempty"`
+	Location         *string                `protobuf:"bytes,5,opt,name=location,proto3,oneof" json:"location,omitempty"`
+	ShowOnlineStatus *bool                  `protobuf:"varint,6,opt,name=show_online_status,json=showOnlineStatus,proto3,oneof" json:"show_online_status,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -157,20 +156,6 @@ func (x *User) GetId() string {
 func (x *User) GetNickname() string {
 	if x != nil && x.Nickname != nil {
 		return *x.Nickname
-	}
-	return ""
-}
-
-func (x *User) GetEmail() string {
-	if x != nil && x.Email != nil {
-		return *x.Email
-	}
-	return ""
-}
-
-func (x *User) GetPhoneNumber() string {
-	if x != nil && x.PhoneNumber != nil {
-		return *x.PhoneNumber
 	}
 	return ""
 }
@@ -319,33 +304,29 @@ var File_users_user_proto protoreflect.FileDescriptor
 
 const file_users_user_proto_rawDesc = "" +
 	"\n" +
-	"\x10users/user.proto\x12\x05users\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x0e\n" +
+	"\x10users/user.proto\x12\x05users\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x0e\n" +
 	"\fGetMeRequest\"0\n" +
 	"\rGetMeResponse\x12\x1f\n" +
-	"\x04user\x18\x01 \x01(\v2\v.users.UserR\x04user\"\xa5\x03\n" +
+	"\x04user\x18\x01 \x01(\v2\v.users.UserR\x04user\"\xb6\x02\n" +
 	"\x04User\x12\x14\n" +
 	"\x02id\x18\x01 \x01(\tB\x04\xe2A\x01\x02R\x02id\x12\x1f\n" +
-	"\bnickname\x18\x02 \x01(\tH\x00R\bnickname\x88\x01\x01\x12\x19\n" +
-	"\x05email\x18\x03 \x01(\tH\x01R\x05email\x88\x01\x01\x12&\n" +
-	"\fphone_number\x18\x04 \x01(\tH\x02R\vphoneNumber\x88\x01\x01\x12?\n" +
+	"\bnickname\x18\x02 \x01(\tH\x00R\bnickname\x88\x01\x01\x12?\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x02R\tcreatedAt\x12\"\n" +
+	"created_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x02R\tcreatedAt\x12\"\n" +
 	"\n" +
-	"avatar_url\x18\a \x01(\tH\x03R\tavatarUrl\x88\x01\x01\x12\x1f\n" +
-	"\blocation\x18\b \x01(\tH\x04R\blocation\x88\x01\x01\x121\n" +
-	"\x12show_online_status\x18\t \x01(\bH\x05R\x10showOnlineStatus\x88\x01\x01B\v\n" +
-	"\t_nicknameB\b\n" +
-	"\x06_emailB\x0f\n" +
-	"\r_phone_numberB\r\n" +
+	"avatar_url\x18\x04 \x01(\tH\x01R\tavatarUrl\x88\x01\x01\x12\x1f\n" +
+	"\blocation\x18\x05 \x01(\tH\x02R\blocation\x88\x01\x01\x121\n" +
+	"\x12show_online_status\x18\x06 \x01(\bH\x03R\x10showOnlineStatus\x88\x01\x01B\v\n" +
+	"\t_nicknameB\r\n" +
 	"\v_avatar_urlB\v\n" +
 	"\t_locationB\x15\n" +
-	"\x13_show_online_statusJ\x04\b\x05\x10\x06R\tgoogle_id\"\xef\x01\n" +
+	"\x13_show_online_status\"\xcd\x02\n" +
 	"\x14UpdateProfileRequest\x12\x1f\n" +
 	"\bnickname\x18\x01 \x01(\tH\x00R\bnickname\x88\x01\x01\x12\"\n" +
 	"\n" +
 	"avatar_url\x18\x02 \x01(\tH\x01R\tavatarUrl\x88\x01\x01\x12\x1f\n" +
-	"\blocation\x18\x03 \x01(\tH\x02R\blocation\x88\x01\x01\x121\n" +
-	"\x12show_online_status\x18\x04 \x01(\bH\x03R\x10showOnlineStatus\x88\x01\x01B\v\n" +
+	"\blocation\x18\x03 \x01(\tH\x02R\blocation\x88\x01\x01\x12\x8e\x01\n" +
+	"\x12show_online_status\x18\x04 \x01(\bB[\x92AX2VЕсли поле не передано, настройка не изменяется.H\x03R\x10showOnlineStatus\x88\x01\x01B\v\n" +
 	"\t_nicknameB\r\n" +
 	"\v_avatar_urlB\v\n" +
 	"\t_locationB\x15\n" +
