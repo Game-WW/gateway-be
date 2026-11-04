@@ -422,6 +422,56 @@
         "tags": [
           "users"
         ]
+      },
+      "patch": {
+        "summary": "Изменить профиль",
+        "description": "Обновляет данные профиля текущего пользователя. Нужна cookie access_token.",
+        "operationId": "UsersService_UpdateProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateProfileResponse"
+            }
+          },
+          "400": {
+            "description": "Переданы некорректные данные профиля",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "409": {
+            "description": "Конфликт данных профиля",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "500": {
+            "description": "Ошибка users-be (БД и т.п.)",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "users"
+        ]
       }
     }
   },
@@ -519,13 +569,38 @@
     "UnlinkIdentityResponse": {
       "type": "object"
     },
+    "UpdateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "nickname": {
+          "type": "string"
+        },
+        "avatar_url": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "show_online_status": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UpdateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
     "User": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
-        "username": {
+        "nickname": {
           "type": "string"
         },
         "email": {
@@ -537,6 +612,15 @@
         "created_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "avatar_url": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "show_online_status": {
+          "type": "boolean"
         }
       },
       "required": [

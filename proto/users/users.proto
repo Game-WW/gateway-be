@@ -186,6 +186,46 @@ service UsersService {
     };
   }
 
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {
+    option (google.api.http) = {
+      patch: "/api/v1/users/me"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "users"
+      summary: "Изменить профиль"
+      description: "Обновляет данные профиля текущего пользователя. Нужна cookie access_token."
+      responses: {
+        key: "400"
+        value: {
+          description: "Переданы некорректные данные профиля"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "409"
+        value: {
+          description: "Конфликт данных профиля"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка users-be (БД и т.п.)"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
   rpc ListIdentities(ListIdentitiesRequest) returns (ListIdentitiesResponse) {
     option (google.api.http) = {get: "/api/v1/identities"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {

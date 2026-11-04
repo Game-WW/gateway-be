@@ -23,6 +23,7 @@ const (
 	UsersService_Refresh_FullMethodName        = "/users.UsersService/Refresh"
 	UsersService_Logout_FullMethodName         = "/users.UsersService/Logout"
 	UsersService_GetMe_FullMethodName          = "/users.UsersService/GetMe"
+	UsersService_UpdateProfile_FullMethodName  = "/users.UsersService/UpdateProfile"
 	UsersService_ListIdentities_FullMethodName = "/users.UsersService/ListIdentities"
 	UsersService_LinkIdentity_FullMethodName   = "/users.UsersService/LinkIdentity"
 	UsersService_UnlinkIdentity_FullMethodName = "/users.UsersService/UnlinkIdentity"
@@ -36,6 +37,7 @@ type UsersServiceClient interface {
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
+	UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*UpdateProfileResponse, error)
 	ListIdentities(ctx context.Context, in *ListIdentitiesRequest, opts ...grpc.CallOption) (*ListIdentitiesResponse, error)
 	LinkIdentity(ctx context.Context, in *LinkIdentityRequest, opts ...grpc.CallOption) (*LinkIdentityResponse, error)
 	UnlinkIdentity(ctx context.Context, in *UnlinkIdentityRequest, opts ...grpc.CallOption) (*UnlinkIdentityResponse, error)
@@ -89,6 +91,16 @@ func (c *usersServiceClient) GetMe(ctx context.Context, in *GetMeRequest, opts .
 	return out, nil
 }
 
+func (c *usersServiceClient) UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*UpdateProfileResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateProfileResponse)
+	err := c.cc.Invoke(ctx, UsersService_UpdateProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *usersServiceClient) ListIdentities(ctx context.Context, in *ListIdentitiesRequest, opts ...grpc.CallOption) (*ListIdentitiesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListIdentitiesResponse)
@@ -127,6 +139,7 @@ type UsersServiceServer interface {
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
+	UpdateProfile(context.Context, *UpdateProfileRequest) (*UpdateProfileResponse, error)
 	ListIdentities(context.Context, *ListIdentitiesRequest) (*ListIdentitiesResponse, error)
 	LinkIdentity(context.Context, *LinkIdentityRequest) (*LinkIdentityResponse, error)
 	UnlinkIdentity(context.Context, *UnlinkIdentityRequest) (*UnlinkIdentityResponse, error)
@@ -151,6 +164,9 @@ func (UnimplementedUsersServiceServer) Logout(context.Context, *LogoutRequest) (
 }
 func (UnimplementedUsersServiceServer) GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMe not implemented")
+}
+func (UnimplementedUsersServiceServer) UpdateProfile(context.Context, *UpdateProfileRequest) (*UpdateProfileResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateProfile not implemented")
 }
 func (UnimplementedUsersServiceServer) ListIdentities(context.Context, *ListIdentitiesRequest) (*ListIdentitiesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListIdentities not implemented")
@@ -254,6 +270,24 @@ func _UsersService_GetMe_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_UpdateProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).UpdateProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_UpdateProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).UpdateProfile(ctx, req.(*UpdateProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UsersService_ListIdentities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListIdentitiesRequest)
 	if err := dec(in); err != nil {
@@ -330,6 +364,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMe",
 			Handler:    _UsersService_GetMe_Handler,
+		},
+		{
+			MethodName: "UpdateProfile",
+			Handler:    _UsersService_UpdateProfile_Handler,
 		},
 		{
 			MethodName: "ListIdentities",

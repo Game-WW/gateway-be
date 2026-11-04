@@ -18,8 +18,22 @@ message User {
   reserved "google_id";
 
   string id = 1 [(google.api.field_behavior) = REQUIRED];
-  optional string username = 2;
+  optional string nickname = 2;
   optional string email = 3;
   optional string phone_number = 4;
   google.protobuf.Timestamp created_at = 6 [(google.api.field_behavior) = REQUIRED];
+  optional string avatar_url = 7;
+  optional string location = 8;
+  optional bool show_online_status = 9;
+}
+
+message UpdateProfileRequest {
+  optional string nickname = 1;
+  optional string avatar_url = 2;
+  optional string location = 3;
+  optional bool show_online_status = 4;
+}
+
+message UpdateProfileResponse {
+  User user = 1;
 }
