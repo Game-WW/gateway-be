@@ -111,7 +111,7 @@ type User struct {
 	CreatedAt        *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	AvatarUrl        *string                `protobuf:"bytes,4,opt,name=avatar_url,json=avatarUrl,proto3,oneof" json:"avatar_url,omitempty"`
 	Location         *string                `protobuf:"bytes,5,opt,name=location,proto3,oneof" json:"location,omitempty"`
-	ShowOnlineStatus *bool                  `protobuf:"varint,6,opt,name=show_online_status,json=showOnlineStatus,proto3,oneof" json:"show_online_status,omitempty"`
+	ShowOnlineStatus bool                   `protobuf:"varint,6,opt,name=show_online_status,json=showOnlineStatus,proto3" json:"show_online_status,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -182,8 +182,8 @@ func (x *User) GetLocation() string {
 }
 
 func (x *User) GetShowOnlineStatus() bool {
-	if x != nil && x.ShowOnlineStatus != nil {
-		return *x.ShowOnlineStatus
+	if x != nil {
+		return x.ShowOnlineStatus
 	}
 	return false
 }
@@ -307,7 +307,7 @@ const file_users_user_proto_rawDesc = "" +
 	"\x10users/user.proto\x12\x05users\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x0e\n" +
 	"\fGetMeRequest\"0\n" +
 	"\rGetMeResponse\x12\x1f\n" +
-	"\x04user\x18\x01 \x01(\v2\v.users.UserR\x04user\"\xb6\x02\n" +
+	"\x04user\x18\x01 \x01(\v2\v.users.UserR\x04user\"\x9a\x02\n" +
 	"\x04User\x12\x14\n" +
 	"\x02id\x18\x01 \x01(\tB\x04\xe2A\x01\x02R\x02id\x12\x1f\n" +
 	"\bnickname\x18\x02 \x01(\tH\x00R\bnickname\x88\x01\x01\x12?\n" +
@@ -315,12 +315,11 @@ const file_users_user_proto_rawDesc = "" +
 	"created_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampB\x04\xe2A\x01\x02R\tcreatedAt\x12\"\n" +
 	"\n" +
 	"avatar_url\x18\x04 \x01(\tH\x01R\tavatarUrl\x88\x01\x01\x12\x1f\n" +
-	"\blocation\x18\x05 \x01(\tH\x02R\blocation\x88\x01\x01\x121\n" +
-	"\x12show_online_status\x18\x06 \x01(\bH\x03R\x10showOnlineStatus\x88\x01\x01B\v\n" +
+	"\blocation\x18\x05 \x01(\tH\x02R\blocation\x88\x01\x01\x12,\n" +
+	"\x12show_online_status\x18\x06 \x01(\bR\x10showOnlineStatusB\v\n" +
 	"\t_nicknameB\r\n" +
 	"\v_avatar_urlB\v\n" +
-	"\t_locationB\x15\n" +
-	"\x13_show_online_status\"\xcd\x02\n" +
+	"\t_location\"\xcd\x02\n" +
 	"\x14UpdateProfileRequest\x12\x1f\n" +
 	"\bnickname\x18\x01 \x01(\tH\x00R\bnickname\x88\x01\x01\x12\"\n" +
 	"\n" +
