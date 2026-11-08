@@ -26,7 +26,7 @@ var File_users_users_proto protoreflect.FileDescriptor
 
 const file_users_users_proto_rawDesc = "" +
 	"\n" +
-	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xad9\n" +
+	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xfb7\n" +
 	"\fUsersService\x12\xf2\x05\n" +
 	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xbd\x05\x92A\x94\x05\n" +
 	"\x04auth\x129Вход через внешнего провайдера\x1afПроверяет id_token провайдера и ставит cookie access_token и refresh_token.J\x9a\x01\n" +
@@ -74,9 +74,9 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/me\x12\xd1\x03\n" +
-	"\tGetAvatar\x12\x17.users.GetAvatarRequest\x1a\x18.users.GetAvatarResponse\"\x90\x03\x92A\xed\x02\n" +
-	"\x05users\x12\x1dПолучить аватар\x1aRВозвращает URL аватара текущего пользователя.JX\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/me\x12\xa7\x03\n" +
+	"\tGetAvatar\x12\x17.users.GetAvatarRequest\x1a\x18.users.GetAvatarResponse\"\xe6\x02\x92A\xc3\x02\n" +
+	"\x05users\x12\x1dПолучить аватар\x1a(Возвращает URL аватара.JX\n" +
 	"\x03401\x12Q\n" +
 	"7Нет cookie access_token или токен истёк\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.StatusJ?\n" +
@@ -85,9 +85,9 @@ const file_users_users_proto_rawDesc = "" +
 	"\x14\x1a\x12.google.rpc.StatusJV\n" +
 	"\x03500\x12O\n" +
 	"5Ошибка при получении аватара\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x19\x12\x17/api/v1/users/me/avatar\x12\xa5\x04\n" +
-	"\fUpdateAvatar\x12\x1a.users.UpdateAvatarRequest\x1a\x1b.users.UpdateAvatarResponse\"\xdb\x03\x92A\xb5\x03\n" +
-	"\x05users\x12\x1dОбновить аватар\x1a~Принимает файл изображения и заменяет аватар текущего пользователя.JY\n" +
+	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x19\x12\x17/api/v1/users/me/avatar\x12\xc7\x03\n" +
+	"\fUpdateAvatar\x12\x1a.users.UpdateAvatarRequest\x1a\x1b.users.UpdateAvatarResponse\"\xfd\x02\x92A\xd7\x02\n" +
+	"\x05users\x12\x1dОбновить аватар\x1a Обновляет аватар.JY\n" +
 	"\x03400\x12R\n" +
 	"8Некорректный файл изображения\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.StatusJX\n" +
@@ -96,9 +96,9 @@ const file_users_users_proto_rawDesc = "" +
 	"\x14\x1a\x12.google.rpc.StatusJX\n" +
 	"\x03500\x12Q\n" +
 	"7Ошибка при обновлении аватара\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x1c:\x01*2\x17/api/v1/users/me/avatar\x12\x89\x03\n" +
-	"\fDeleteAvatar\x12\x1a.users.DeleteAvatarRequest\x1a\x1b.users.DeleteAvatarResponse\"\xbf\x02\x92A\x9c\x02\n" +
-	"\x05users\x12\x1bУдалить аватар\x1aFУдаляет аватар текущего пользователя.JX\n" +
+	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x1c:\x01*2\x17/api/v1/users/me/avatar\x12\xdf\x02\n" +
+	"\fDeleteAvatar\x12\x1a.users.DeleteAvatarRequest\x1a\x1b.users.DeleteAvatarResponse\"\x95\x02\x92A\xf2\x01\n" +
+	"\x05users\x12\x1bУдалить аватар\x1a\x1cУдаляет аватар.JX\n" +
 	"\x03401\x12Q\n" +
 	"7Нет cookie access_token или токен истёк\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.StatusJT\n" +

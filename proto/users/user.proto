@@ -39,7 +39,7 @@ message UpdateProfileResponse {
 message GetAvatarRequest {}
 
 message GetAvatarResponse {
-  string url = 1 [(google.api.field_behavior) = REQUIRED];
+  optional string url = 1;
 }
 
 message UpdateAvatarRequest {

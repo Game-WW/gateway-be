@@ -477,7 +477,7 @@
     "/api/v1/users/me/avatar": {
       "get": {
         "summary": "Получить аватар",
-        "description": "Возвращает URL аватара текущего пользователя.",
+        "description": "Возвращает URL аватара.",
         "operationId": "UsersService_GetAvatar",
         "responses": {
           "200": {
@@ -511,7 +511,7 @@
       },
       "delete": {
         "summary": "Удалить аватар",
-        "description": "Удаляет аватар текущего пользователя.",
+        "description": "Удаляет аватар.",
         "operationId": "UsersService_DeleteAvatar",
         "responses": {
           "200": {
@@ -539,7 +539,7 @@
       },
       "patch": {
         "summary": "Обновить аватар",
-        "description": "Принимает файл изображения и заменяет аватар текущего пользователя.",
+        "description": "Обновляет аватар.",
         "operationId": "UsersService_UpdateAvatar",
         "responses": {
           "200": {
@@ -602,10 +602,7 @@
         "url": {
           "type": "string"
         }
-      },
-      "required": [
-        "url"
-      ]
+      }
     },
     "GetMeResponse": {
       "type": "object",

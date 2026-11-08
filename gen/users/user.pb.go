@@ -322,7 +322,7 @@ func (*GetAvatarRequest) Descriptor() ([]byte, []int) {
 
 type GetAvatarResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Url           string                 `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	Url           *string                `protobuf:"bytes,1,opt,name=url,proto3,oneof" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -358,8 +358,8 @@ func (*GetAvatarResponse) Descriptor() ([]byte, []int) {
 }
 
 func (x *GetAvatarResponse) GetUrl() string {
-	if x != nil {
-		return x.Url
+	if x != nil && x.Url != nil {
+		return *x.Url
 	}
 	return ""
 }
@@ -542,9 +542,10 @@ const file_users_user_proto_rawDesc = "" +
 	"\x13_show_online_status\"8\n" +
 	"\x15UpdateProfileResponse\x12\x1f\n" +
 	"\x04user\x18\x01 \x01(\v2\v.users.UserR\x04user\"\x12\n" +
-	"\x10GetAvatarRequest\"+\n" +
-	"\x11GetAvatarResponse\x12\x16\n" +
-	"\x03url\x18\x01 \x01(\tB\x04\xe2A\x01\x02R\x03url\"1\n" +
+	"\x10GetAvatarRequest\"2\n" +
+	"\x11GetAvatarResponse\x12\x15\n" +
+	"\x03url\x18\x01 \x01(\tH\x00R\x03url\x88\x01\x01B\x06\n" +
+	"\x04_url\"1\n" +
 	"\x13UpdateAvatarRequest\x12\x1a\n" +
 	"\x05image\x18\x01 \x01(\fB\x04\xe2A\x01\x02R\x05image\"\x16\n" +
 	"\x14UpdateAvatarResponse\"\x15\n" +
@@ -596,6 +597,7 @@ func file_users_user_proto_init() {
 	}
 	file_users_user_proto_msgTypes[2].OneofWrappers = []any{}
 	file_users_user_proto_msgTypes[3].OneofWrappers = []any{}
+	file_users_user_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

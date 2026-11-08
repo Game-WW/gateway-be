@@ -191,7 +191,7 @@ service UsersService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "users"
       summary: "Получить аватар"
-      description: "Возвращает URL аватара текущего пользователя."
+      description: "Возвращает URL аватара."
       responses: {
         key: "401"
         value: {
@@ -224,7 +224,7 @@ service UsersService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "users"
       summary: "Обновить аватар"
-      description: "Принимает файл изображения и заменяет аватар текущего пользователя."
+      description: "Обновляет аватар."
       responses: {
         key: "400"
         value: {
@@ -254,7 +254,7 @@ service UsersService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "users"
       summary: "Удалить аватар"
-      description: "Удаляет аватар текущего пользователя."
+      description: "Удаляет аватар."
       responses: {
         key: "401"
         value: {
