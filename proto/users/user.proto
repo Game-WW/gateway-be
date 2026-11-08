@@ -18,9 +18,8 @@ message User {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
   optional string nickname = 2;
   google.protobuf.Timestamp created_at = 3 [(google.api.field_behavior) = REQUIRED];
-  optional string avatar_url = 4;
-  optional string location = 5;
-  bool show_online_status = 6;
+  optional string location = 4;
+  bool show_online_status = 5;
 }
 
 message UpdateProfileRequest {
