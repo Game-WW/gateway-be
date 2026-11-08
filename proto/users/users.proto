@@ -186,6 +186,92 @@ service UsersService {
     };
   }
 
+  rpc GetAvatar(GetAvatarRequest) returns (GetAvatarResponse) {
+    option (google.api.http) = {get: "/api/v1/users/me/avatar"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "users"
+      summary: "Получить аватар"
+      description: "Возвращает URL аватара текущего пользователя."
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "404"
+        value: {
+          description: "Аватар не найден"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка при получении аватара"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
+  rpc UpdateAvatar(UpdateAvatarRequest) returns (UpdateAvatarResponse) {
+    option (google.api.http) = {
+      patch: "/api/v1/users/me/avatar"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "users"
+      summary: "Обновить аватар"
+      description: "Принимает файл изображения и заменяет аватар текущего пользователя."
+      responses: {
+        key: "400"
+        value: {
+          description: "Некорректный файл изображения"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка при обновлении аватара"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
+  rpc DeleteAvatar(DeleteAvatarRequest) returns (DeleteAvatarResponse) {
+    option (google.api.http) = {delete: "/api/v1/users/me/avatar"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "users"
+      summary: "Удалить аватар"
+      description: "Удаляет аватар текущего пользователя."
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка при удалении аватара"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
   rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {
     option (google.api.http) = {
       patch: "/api/v1/users/me"

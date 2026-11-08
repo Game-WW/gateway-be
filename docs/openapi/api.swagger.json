@@ -473,6 +473,114 @@
           "users"
         ]
       }
+    },
+    "/api/v1/users/me/avatar": {
+      "get": {
+        "summary": "Получить аватар",
+        "description": "Возвращает URL аватара текущего пользователя.",
+        "operationId": "UsersService_GetAvatar",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetAvatarResponse"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "404": {
+            "description": "Аватар не найден",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "500": {
+            "description": "Ошибка при получении аватара",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "summary": "Удалить аватар",
+        "description": "Удаляет аватар текущего пользователя.",
+        "operationId": "UsersService_DeleteAvatar",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteAvatarResponse"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "500": {
+            "description": "Ошибка при удалении аватара",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "summary": "Обновить аватар",
+        "description": "Принимает файл изображения и заменяет аватар текущего пользователя.",
+        "operationId": "UsersService_UpdateAvatar",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateAvatarResponse"
+            }
+          },
+          "400": {
+            "description": "Некорректный файл изображения",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "500": {
+            "description": "Ошибка при обновлении аватара",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateAvatarRequest"
+            }
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
     }
   },
   "definitions": {
@@ -484,6 +592,20 @@
         }
       },
       "additionalProperties": true
+    },
+    "DeleteAvatarResponse": {
+      "type": "object"
+    },
+    "GetAvatarResponse": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ]
     },
     "GetMeResponse": {
       "type": "object",
@@ -567,6 +689,21 @@
       }
     },
     "UnlinkIdentityResponse": {
+      "type": "object"
+    },
+    "UpdateAvatarRequest": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "required": [
+        "image"
+      ]
+    },
+    "UpdateAvatarResponse": {
       "type": "object"
     },
     "UpdateProfileRequest": {

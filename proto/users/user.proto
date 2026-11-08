@@ -35,3 +35,19 @@ message UpdateProfileRequest {
 message UpdateProfileResponse {
   User user = 1;
 }
+
+message GetAvatarRequest {}
+
+message GetAvatarResponse {
+  string url = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateAvatarRequest {
+  bytes image = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateAvatarResponse {}
+
+message DeleteAvatarRequest {}
+
+message DeleteAvatarResponse {}

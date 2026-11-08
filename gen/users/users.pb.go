@@ -26,7 +26,7 @@ var File_users_users_proto protoreflect.FileDescriptor
 
 const file_users_users_proto_rawDesc = "" +
 	"\n" +
-	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xa5.\n" +
+	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xad9\n" +
 	"\fUsersService\x12\xf2\x05\n" +
 	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xbd\x05\x92A\x94\x05\n" +
 	"\x04auth\x129Вход через внешнего провайдера\x1afПроверяет id_token провайдера и ставит cookie access_token и refresh_token.J\x9a\x01\n" +
@@ -74,7 +74,37 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/me\x12\xe9\x04\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/me\x12\xd1\x03\n" +
+	"\tGetAvatar\x12\x17.users.GetAvatarRequest\x1a\x18.users.GetAvatarResponse\"\x90\x03\x92A\xed\x02\n" +
+	"\x05users\x12\x1dПолучить аватар\x1aRВозвращает URL аватара текущего пользователя.JX\n" +
+	"\x03401\x12Q\n" +
+	"7Нет cookie access_token или токен истёк\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.StatusJ?\n" +
+	"\x03404\x128\n" +
+	"\x1eАватар не найден\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.StatusJV\n" +
+	"\x03500\x12O\n" +
+	"5Ошибка при получении аватара\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x19\x12\x17/api/v1/users/me/avatar\x12\xa5\x04\n" +
+	"\fUpdateAvatar\x12\x1a.users.UpdateAvatarRequest\x1a\x1b.users.UpdateAvatarResponse\"\xdb\x03\x92A\xb5\x03\n" +
+	"\x05users\x12\x1dОбновить аватар\x1a~Принимает файл изображения и заменяет аватар текущего пользователя.JY\n" +
+	"\x03400\x12R\n" +
+	"8Некорректный файл изображения\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.StatusJX\n" +
+	"\x03401\x12Q\n" +
+	"7Нет cookie access_token или токен истёк\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.StatusJX\n" +
+	"\x03500\x12Q\n" +
+	"7Ошибка при обновлении аватара\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x1c:\x01*2\x17/api/v1/users/me/avatar\x12\x89\x03\n" +
+	"\fDeleteAvatar\x12\x1a.users.DeleteAvatarRequest\x1a\x1b.users.DeleteAvatarResponse\"\xbf\x02\x92A\x9c\x02\n" +
+	"\x05users\x12\x1bУдалить аватар\x1aFУдаляет аватар текущего пользователя.JX\n" +
+	"\x03401\x12Q\n" +
+	"7Нет cookie access_token или токен истёк\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.StatusJT\n" +
+	"\x03500\x12M\n" +
+	"3Ошибка при удалении аватара\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x19*\x17/api/v1/users/me/avatar\x12\xe9\x04\n" +
 	"\rUpdateProfile\x12\x1b.users.UpdateProfileRequest\x1a\x1c.users.UpdateProfileResponse\"\x9c\x04\x92A\xfd\x03\n" +
 	"\x05users\x12\x1fИзменить профиль\x1ayОбновляет данные профиля текущего пользователя. Нужна cookie access_token.Jf\n" +
 	"\x03400\x12_\n" +
@@ -148,38 +178,50 @@ var file_users_users_proto_goTypes = []any{
 	(*RefreshRequest)(nil),         // 1: users.RefreshRequest
 	(*LogoutRequest)(nil),          // 2: users.LogoutRequest
 	(*GetMeRequest)(nil),           // 3: users.GetMeRequest
-	(*UpdateProfileRequest)(nil),   // 4: users.UpdateProfileRequest
-	(*ListIdentitiesRequest)(nil),  // 5: users.ListIdentitiesRequest
-	(*LinkIdentityRequest)(nil),    // 6: users.LinkIdentityRequest
-	(*UnlinkIdentityRequest)(nil),  // 7: users.UnlinkIdentityRequest
-	(*LoginResponse)(nil),          // 8: users.LoginResponse
-	(*RefreshResponse)(nil),        // 9: users.RefreshResponse
-	(*LogoutResponse)(nil),         // 10: users.LogoutResponse
-	(*GetMeResponse)(nil),          // 11: users.GetMeResponse
-	(*UpdateProfileResponse)(nil),  // 12: users.UpdateProfileResponse
-	(*ListIdentitiesResponse)(nil), // 13: users.ListIdentitiesResponse
-	(*LinkIdentityResponse)(nil),   // 14: users.LinkIdentityResponse
-	(*UnlinkIdentityResponse)(nil), // 15: users.UnlinkIdentityResponse
+	(*GetAvatarRequest)(nil),       // 4: users.GetAvatarRequest
+	(*UpdateAvatarRequest)(nil),    // 5: users.UpdateAvatarRequest
+	(*DeleteAvatarRequest)(nil),    // 6: users.DeleteAvatarRequest
+	(*UpdateProfileRequest)(nil),   // 7: users.UpdateProfileRequest
+	(*ListIdentitiesRequest)(nil),  // 8: users.ListIdentitiesRequest
+	(*LinkIdentityRequest)(nil),    // 9: users.LinkIdentityRequest
+	(*UnlinkIdentityRequest)(nil),  // 10: users.UnlinkIdentityRequest
+	(*LoginResponse)(nil),          // 11: users.LoginResponse
+	(*RefreshResponse)(nil),        // 12: users.RefreshResponse
+	(*LogoutResponse)(nil),         // 13: users.LogoutResponse
+	(*GetMeResponse)(nil),          // 14: users.GetMeResponse
+	(*GetAvatarResponse)(nil),      // 15: users.GetAvatarResponse
+	(*UpdateAvatarResponse)(nil),   // 16: users.UpdateAvatarResponse
+	(*DeleteAvatarResponse)(nil),   // 17: users.DeleteAvatarResponse
+	(*UpdateProfileResponse)(nil),  // 18: users.UpdateProfileResponse
+	(*ListIdentitiesResponse)(nil), // 19: users.ListIdentitiesResponse
+	(*LinkIdentityResponse)(nil),   // 20: users.LinkIdentityResponse
+	(*UnlinkIdentityResponse)(nil), // 21: users.UnlinkIdentityResponse
 }
 var file_users_users_proto_depIdxs = []int32{
 	0,  // 0: users.UsersService.Login:input_type -> users.LoginRequest
 	1,  // 1: users.UsersService.Refresh:input_type -> users.RefreshRequest
 	2,  // 2: users.UsersService.Logout:input_type -> users.LogoutRequest
 	3,  // 3: users.UsersService.GetMe:input_type -> users.GetMeRequest
-	4,  // 4: users.UsersService.UpdateProfile:input_type -> users.UpdateProfileRequest
-	5,  // 5: users.UsersService.ListIdentities:input_type -> users.ListIdentitiesRequest
-	6,  // 6: users.UsersService.LinkIdentity:input_type -> users.LinkIdentityRequest
-	7,  // 7: users.UsersService.UnlinkIdentity:input_type -> users.UnlinkIdentityRequest
-	8,  // 8: users.UsersService.Login:output_type -> users.LoginResponse
-	9,  // 9: users.UsersService.Refresh:output_type -> users.RefreshResponse
-	10, // 10: users.UsersService.Logout:output_type -> users.LogoutResponse
-	11, // 11: users.UsersService.GetMe:output_type -> users.GetMeResponse
-	12, // 12: users.UsersService.UpdateProfile:output_type -> users.UpdateProfileResponse
-	13, // 13: users.UsersService.ListIdentities:output_type -> users.ListIdentitiesResponse
-	14, // 14: users.UsersService.LinkIdentity:output_type -> users.LinkIdentityResponse
-	15, // 15: users.UsersService.UnlinkIdentity:output_type -> users.UnlinkIdentityResponse
-	8,  // [8:16] is the sub-list for method output_type
-	0,  // [0:8] is the sub-list for method input_type
+	4,  // 4: users.UsersService.GetAvatar:input_type -> users.GetAvatarRequest
+	5,  // 5: users.UsersService.UpdateAvatar:input_type -> users.UpdateAvatarRequest
+	6,  // 6: users.UsersService.DeleteAvatar:input_type -> users.DeleteAvatarRequest
+	7,  // 7: users.UsersService.UpdateProfile:input_type -> users.UpdateProfileRequest
+	8,  // 8: users.UsersService.ListIdentities:input_type -> users.ListIdentitiesRequest
+	9,  // 9: users.UsersService.LinkIdentity:input_type -> users.LinkIdentityRequest
+	10, // 10: users.UsersService.UnlinkIdentity:input_type -> users.UnlinkIdentityRequest
+	11, // 11: users.UsersService.Login:output_type -> users.LoginResponse
+	12, // 12: users.UsersService.Refresh:output_type -> users.RefreshResponse
+	13, // 13: users.UsersService.Logout:output_type -> users.LogoutResponse
+	14, // 14: users.UsersService.GetMe:output_type -> users.GetMeResponse
+	15, // 15: users.UsersService.GetAvatar:output_type -> users.GetAvatarResponse
+	16, // 16: users.UsersService.UpdateAvatar:output_type -> users.UpdateAvatarResponse
+	17, // 17: users.UsersService.DeleteAvatar:output_type -> users.DeleteAvatarResponse
+	18, // 18: users.UsersService.UpdateProfile:output_type -> users.UpdateProfileResponse
+	19, // 19: users.UsersService.ListIdentities:output_type -> users.ListIdentitiesResponse
+	20, // 20: users.UsersService.LinkIdentity:output_type -> users.LinkIdentityResponse
+	21, // 21: users.UsersService.UnlinkIdentity:output_type -> users.UnlinkIdentityResponse
+	11, // [11:22] is the sub-list for method output_type
+	0,  // [0:11] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
