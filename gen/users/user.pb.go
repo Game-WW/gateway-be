@@ -191,7 +191,6 @@ func (x *User) GetShowOnlineStatus() bool {
 type UpdateProfileRequest struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	Nickname         *string                `protobuf:"bytes,1,opt,name=nickname,proto3,oneof" json:"nickname,omitempty"`
-	AvatarUrl        *string                `protobuf:"bytes,2,opt,name=avatar_url,json=avatarUrl,proto3,oneof" json:"avatar_url,omitempty"`
 	Location         *string                `protobuf:"bytes,3,opt,name=location,proto3,oneof" json:"location,omitempty"`
 	ShowOnlineStatus *bool                  `protobuf:"varint,4,opt,name=show_online_status,json=showOnlineStatus,proto3,oneof" json:"show_online_status,omitempty"`
 	unknownFields    protoimpl.UnknownFields
@@ -231,13 +230,6 @@ func (*UpdateProfileRequest) Descriptor() ([]byte, []int) {
 func (x *UpdateProfileRequest) GetNickname() string {
 	if x != nil && x.Nickname != nil {
 		return *x.Nickname
-	}
-	return ""
-}
-
-func (x *UpdateProfileRequest) GetAvatarUrl() string {
-	if x != nil && x.AvatarUrl != nil {
-		return *x.AvatarUrl
 	}
 	return ""
 }
@@ -319,15 +311,12 @@ const file_users_user_proto_rawDesc = "" +
 	"\x12show_online_status\x18\x06 \x01(\bR\x10showOnlineStatusB\v\n" +
 	"\t_nicknameB\r\n" +
 	"\v_avatar_urlB\v\n" +
-	"\t_location\"\xcd\x02\n" +
+	"\t_location\"\x9a\x02\n" +
 	"\x14UpdateProfileRequest\x12\x1f\n" +
-	"\bnickname\x18\x01 \x01(\tH\x00R\bnickname\x88\x01\x01\x12\"\n" +
-	"\n" +
-	"avatar_url\x18\x02 \x01(\tH\x01R\tavatarUrl\x88\x01\x01\x12\x1f\n" +
-	"\blocation\x18\x03 \x01(\tH\x02R\blocation\x88\x01\x01\x12\x8e\x01\n" +
-	"\x12show_online_status\x18\x04 \x01(\bB[\x92AX2VЕсли поле не передано, настройка не изменяется.H\x03R\x10showOnlineStatus\x88\x01\x01B\v\n" +
-	"\t_nicknameB\r\n" +
-	"\v_avatar_urlB\v\n" +
+	"\bnickname\x18\x01 \x01(\tH\x00R\bnickname\x88\x01\x01\x12\x1f\n" +
+	"\blocation\x18\x03 \x01(\tH\x01R\blocation\x88\x01\x01\x12\x8e\x01\n" +
+	"\x12show_online_status\x18\x04 \x01(\bB[\x92AX2VЕсли поле не передано, настройка не изменяется.H\x02R\x10showOnlineStatus\x88\x01\x01B\v\n" +
+	"\t_nicknameB\v\n" +
 	"\t_locationB\x15\n" +
 	"\x13_show_online_status\"8\n" +
 	"\x15UpdateProfileResponse\x12\x1f\n" +

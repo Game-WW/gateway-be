@@ -575,9 +575,6 @@
         "nickname": {
           "type": "string"
         },
-        "avatar_url": {
-          "type": "string"
-        },
         "location": {
           "type": "string"
         },

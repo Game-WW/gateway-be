@@ -25,7 +25,6 @@ message User {
 
 message UpdateProfileRequest {
   optional string nickname = 1;
-  optional string avatar_url = 2;
   optional string location = 3;
   optional bool show_online_status = 4 [
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
