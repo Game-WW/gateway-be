@@ -22,6 +22,7 @@ var incomingHeaders = map[string]string{
 	middleware.UserIDHeader:       "x-user-id",
 	middleware.UserAgentHeader:    "x-user-agent",
 	middleware.RefreshTokenHeader: refreshTokenMetaKey,
+	middleware.ClientIPHeader:     "x-forwarded-for",
 	"Authorization":               "authorization",
 	"X-Auth-Code":                 "x-auth-code",
 	"X-Code-Verifier":             "x-code-verifier",

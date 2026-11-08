@@ -8,10 +8,9 @@ import (
 const (
 	UserAgentHeader    = "X-User-Agent"
 	RefreshTokenHeader = "X-Refresh-Token"
+	ClientIPHeader     = "X-Forwarded-For"
 
 	RefreshCookieName = "refresh_token"
-
-	forwardedForHeader = "X-Forwarded-For"
 )
 
 // Headers готовит заголовки, которые proxy переложит в gRPC metadata.
@@ -20,8 +19,9 @@ func Headers() fiber.Handler {
 		h := &c.Request().Header
 
 		h.Del(UserIDHeader)
-		h.Del(forwardedForHeader)
+		h.Del(ClientIPHeader)
 
+		setOrDel(h, ClientIPHeader, c.IP())
 		setOrDel(h, UserAgentHeader, c.Get(fiber.HeaderUserAgent))
 		setOrDel(h, RefreshTokenHeader, c.Cookies(RefreshCookieName))
 

@@ -50,7 +50,7 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     cfg.AllowedOrigins,
-		AllowHeaders: "Authorization, Content-Type, X-Auth-Code, X-Code-Verifier",
+		AllowHeaders:     "Authorization, Content-Type, X-Auth-Code, X-Code-Verifier",
 		AllowCredentials: true,
 	}))
 
