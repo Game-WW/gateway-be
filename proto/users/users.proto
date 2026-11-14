@@ -35,7 +35,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         type: TYPE_API_KEY
         in: IN_HEADER
         name: "Authorization"
-        description: "Bearer <id_token провайдера>"
+        description: "Для Google: Bearer <id_token>. Для Yandex: заголовок X-Auth-Code и, при PKCE, X-Code-Verifier."
       }
     }
   }
@@ -47,7 +47,7 @@ service UsersService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "auth"
       summary: "Вход через внешнего провайдера"
-      description: "Проверяет id_token провайдера и ставит cookie access_token и refresh_token."
+      description: "Google принимает id_token в Authorization; Yandex принимает auth code в X-Auth-Code и, при PKCE, X-Code-Verifier. Ставит cookie access_token и refresh_token."
       security: {
         security_requirement: {
           key: "IdToken"
@@ -68,7 +68,7 @@ service UsersService {
       responses: {
         key: "401"
         value: {
-          description: "Нет Bearer или невалидный id_token"
+          description: "Нет credentials или токен/код провайдера невалиден"
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"
@@ -149,7 +149,7 @@ service UsersService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "users"
       summary: "Текущий пользователь"
-      description: "Нужна cookie access_token (ставит /auth/google)."
+      description: "Нужна cookie access_token (ставит /auth/login/{provider})."
       responses: {
         key: "401"
         value: {
@@ -351,7 +351,7 @@ service UsersService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "identity"
       summary: "Привязать способ входа"
-      description: "Нужны cookie access_token (кто привязывает) и Bearer id_token провайдера (что привязываем). Повторная привязка того же аккаунта — 200."
+      description: "Нужны cookie access_token (кто привязывает) и credentials Google или Yandex (что привязываем). Повторная привязка того же аккаунта — 200."
       security: {
         security_requirement: {
           key: "IdToken"
@@ -372,7 +372,7 @@ service UsersService {
       responses: {
         key: "401"
         value: {
-          description: "Нет cookie access_token, нет Bearer или невалидный id_token"
+          description: "Нет cookie access_token или credentials провайдера невалидны"
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"

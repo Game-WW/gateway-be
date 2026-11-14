@@ -26,16 +26,16 @@ var File_users_users_proto protoreflect.FileDescriptor
 
 const file_users_users_proto_rawDesc = "" +
 	"\n" +
-	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xfb7\n" +
-	"\fUsersService\x12\xf2\x05\n" +
-	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xbd\x05\x92A\x94\x05\n" +
-	"\x04auth\x129Вход через внешнего провайдера\x1afПроверяет id_token провайдера и ставит cookie access_token и refresh_token.J\x9a\x01\n" +
+	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\x809\n" +
+	"\fUsersService\x12\xea\x06\n" +
+	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xb5\x06\x92A\x8c\x06\n" +
+	"\x04auth\x129Вход через внешнего провайдера\x1a\xbc\x01Google принимает id_token в Authorization; Yandex принимает auth code в X-Auth-Code и, при PKCE, X-Code-Verifier. Ставит cookie access_token и refresh_token.J\x9a\x01\n" +
 	"\x03400\x12\x92\x01\n" +
 	")Неизвестный провайдер\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"M\n" +
-	"\x10application/json\x129{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}J\xa3\x01\n" +
-	"\x03401\x12\x9b\x01\n" +
-	"2Нет Bearer или невалидный id_token\x12\x16\n" +
+	"\x10application/json\x129{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}J\xc4\x01\n" +
+	"\x03401\x12\xbc\x01\n" +
+	"SНет credentials или токен/код провайдера невалиден\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"M\n" +
 	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\x96\x01\n" +
 	"\x03500\x12\x8e\x01\n" +
@@ -60,9 +60,9 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x15\"\x13/api/v1/auth/logout\x12\xd7\x05\n" +
-	"\x05GetMe\x12\x13.users.GetMeRequest\x1a\x14.users.GetMeResponse\"\xa2\x05\x92A\x80\x05\n" +
-	"\x05users\x12'Текущий пользователь\x1a;Нужна cookie access_token (ставит /auth/google).J\xc9\x01\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x15\"\x13/api/v1/auth/logout\x12\xe1\x05\n" +
+	"\x05GetMe\x12\x13.users.GetMeRequest\x1a\x14.users.GetMeResponse\"\xac\x05\x92A\x8a\x05\n" +
+	"\x05users\x12'Текущий пользователь\x1aEНужна cookie access_token (ставит /auth/login/{provider}).J\xc9\x01\n" +
 	"\x03401\x12\xc1\x01\n" +
 	"XНет cookie access_token или токен истёк — вызвать /auth/refresh\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"M\n" +
@@ -128,16 +128,16 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x14\x12\x12/api/v1/identities\x12\x81\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x14\x12\x12/api/v1/identities\x12\x84\n" +
 	"\n" +
-	"\fLinkIdentity\x12\x1a.users.LinkIdentityRequest\x1a\x1b.users.LinkIdentityResponse\"\xb7\t\x92A\x84\t\n" +
-	"\bidentity\x12*Привязать способ входа\x1a\xd3\x01Нужны cookie access_token (кто привязывает) и Bearer id_token провайдера (что привязываем). Повторная привязка того же аккаунта — 200.J\xb8\x01\n" +
+	"\fLinkIdentity\x12\x1a.users.LinkIdentityRequest\x1a\x1b.users.LinkIdentityResponse\"\xba\t\x92A\x87\t\n" +
+	"\bidentity\x12*Привязать способ входа\x1a\xcf\x01Нужны cookie access_token (кто привязывает) и credentials Google или Yandex (что привязываем). Повторная привязка того же аккаунта — 200.J\xb8\x01\n" +
 	"\x03400\x12\xb0\x01\n" +
 	"GНеизвестный или выключенный провайдер\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"M\n" +
-	"\x10application/json\x129{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}J\xbf\x01\n" +
-	"\x03401\x12\xb7\x01\n" +
-	"NНет cookie access_token, нет Bearer или невалидный id_token\x12\x16\n" +
+	"\x10application/json\x129{\"code\": 3, \"message\": \"invalid argument\", \"details\": []}J\xc6\x01\n" +
+	"\x03401\x12\xbe\x01\n" +
+	"UНет cookie access_token или credentials провайдера невалидны\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"M\n" +
 	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\xd0\x02\n" +
 	"\x03409\x12\xc8\x02\n" +
@@ -163,12 +163,12 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x1f*\x1d/api/v1/identities/{provider}B\xdb\x05\x92A\xa6\x05\x12\x85\x03\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x1f*\x1d/api/v1/identities/{provider}B\xa9\x06\x92A\xf4\x05\x12\x85\x03\n" +
 	"\tChess API\x12\xf2\x02Авторизация на cookie: /auth/login/{provider} ставит access_token и refresh_token, дальше браузер шлёт их сам.\n" +
 	"\n" +
-	"Ошибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.2\x031.0ZH\n" +
-	"F\n" +
-	"\aIdToken\x12;\b\x02\x12&Bearer <id_token провайдера>\x1a\rAuthorization \x02j?\n" +
+	"Ошибки всегда в одном формате: {\"code\": <gRPC-код>, \"message\": \"...\", \"details\": []}. Решения на фронте — по HTTP-статусу, message только для логов.2\x031.0Z\x95\x01\n" +
+	"\x92\x01\n" +
+	"\aIdToken\x12\x86\x01\b\x02\x12qДля Google: Bearer <id_token>. Для Yandex: заголовок X-Auth-Code и, при PKCE, X-Code-Verifier.\x1a\rAuthorization \x02j?\n" +
 	"\x04auth\x127Вход, обновление токена, выходj!\n" +
 	"\x05users\x12\x18Пользователиjn\n" +
 	"\bidentity\x12bСпособы входа пользователя: список, привязка, отвязкаZ/github.com/Game-WW/gateway-be/gen/users;userspbb\x06proto3"

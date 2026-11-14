@@ -251,9 +251,9 @@ var File_users_auth_proto protoreflect.FileDescriptor
 
 const file_users_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x10users/auth.proto\x12\x05users\x1a\x1fgoogle/api/field_behavior.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"j\n" +
-	"\fLoginRequest\x12Z\n" +
-	"\bprovider\x18\x01 \x01(\tB>\x92A725Провайдер, выдавший id_token: google\xe2A\x01\x02R\bprovider\"\x0f\n" +
+	"\x10users/auth.proto\x12\x05users\x1a\x1fgoogle/api/field_behavior.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"h\n" +
+	"\fLoginRequest\x12X\n" +
+	"\bprovider\x18\x01 \x01(\tB<\x92A523Провайдер входа: google или yandex\xe2A\x01\x02R\bprovider\"\x0f\n" +
 	"\rLoginResponse\"\x10\n" +
 	"\x0eRefreshRequest\"\x11\n" +
 	"\x0fRefreshResponse\"\x0f\n" +

@@ -17,7 +17,7 @@ message ListIdentitiesResponse {
 message LinkIdentityRequest {
   string provider = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Провайдер, выдавший id_token: google"}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Провайдер входа для привязки: google или yandex"}
   ];
 }
 
@@ -28,7 +28,7 @@ message LinkIdentityResponse {
 message UnlinkIdentityRequest {
   string provider = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Провайдер, который отвязать: google"}
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Провайдер для отвязки: google или yandex"}
   ];
 }
 

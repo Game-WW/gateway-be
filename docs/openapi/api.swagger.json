@@ -29,7 +29,7 @@
     "/api/v1/auth/login/{provider}": {
       "post": {
         "summary": "Вход через внешнего провайдера",
-        "description": "Проверяет id_token провайдера и ставит cookie access_token и refresh_token.",
+        "description": "Google принимает id_token в Authorization; Yandex принимает auth code в X-Auth-Code и, при PKCE, X-Code-Verifier. Ставит cookie access_token и refresh_token.",
         "operationId": "UsersService_Login",
         "responses": {
           "200": {
@@ -52,7 +52,7 @@
             }
           },
           "401": {
-            "description": "Нет Bearer или невалидный id_token",
+            "description": "Нет credentials или токен/код провайдера невалиден",
             "schema": {
               "$ref": "#/definitions/Status"
             },
@@ -81,7 +81,7 @@
         "parameters": [
           {
             "name": "provider",
-            "description": "Провайдер, выдавший id_token: google",
+            "description": "Провайдер входа: google или yandex",
             "in": "path",
             "required": true,
             "type": "string"
@@ -271,7 +271,7 @@
         "parameters": [
           {
             "name": "provider",
-            "description": "Провайдер, который отвязать: google",
+            "description": "Провайдер для отвязки: google или yandex",
             "in": "path",
             "required": true,
             "type": "string"
@@ -283,7 +283,7 @@
       },
       "post": {
         "summary": "Привязать способ входа",
-        "description": "Нужны cookie access_token (кто привязывает) и Bearer id_token провайдера (что привязываем). Повторная привязка того же аккаунта — 200.",
+        "description": "Нужны cookie access_token (кто привязывает) и credentials Google или Yandex (что привязываем). Повторная привязка того же аккаунта — 200.",
         "operationId": "UsersService_LinkIdentity",
         "responses": {
           "200": {
@@ -309,7 +309,7 @@
             }
           },
           "401": {
-            "description": "Нет cookie access_token, нет Bearer или невалидный id_token",
+            "description": "Нет cookie access_token или credentials провайдера невалидны",
             "schema": {
               "$ref": "#/definitions/Status"
             },
@@ -351,7 +351,7 @@
         "parameters": [
           {
             "name": "provider",
-            "description": "Провайдер, выдавший id_token: google",
+            "description": "Провайдер входа для привязки: google или yandex",
             "in": "path",
             "required": true,
             "type": "string"
@@ -370,7 +370,7 @@
     "/api/v1/users/me": {
       "get": {
         "summary": "Текущий пользователь",
-        "description": "Нужна cookie access_token (ставит /auth/google).",
+        "description": "Нужна cookie access_token (ставит /auth/login/{provider}).",
         "operationId": "UsersService_GetMe",
         "responses": {
           "200": {
@@ -755,7 +755,7 @@
   "securityDefinitions": {
     "IdToken": {
       "type": "apiKey",
-      "description": "Bearer \u003cid_token провайдера\u003e",
+      "description": "Для Google: Bearer \u003cid_token\u003e. Для Yandex: заголовок X-Auth-Code и, при PKCE, X-Code-Verifier.",
       "name": "Authorization",
       "in": "header"
     }

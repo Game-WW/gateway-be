@@ -349,13 +349,13 @@ const file_users_identity_proto_rawDesc = "" +
 	"\x16ListIdentitiesResponse\x12/\n" +
 	"\n" +
 	"identities\x18\x01 \x03(\v2\x0f.users.IdentityR\n" +
-	"identities\"q\n" +
-	"\x13LinkIdentityRequest\x12Z\n" +
-	"\bprovider\x18\x01 \x01(\tB>\x92A725Провайдер, выдавший id_token: google\xe2A\x01\x02R\bprovider\"I\n" +
+	"identities\"\x87\x01\n" +
+	"\x13LinkIdentityRequest\x12p\n" +
+	"\bprovider\x18\x01 \x01(\tBT\x92AM2KПровайдер входа для привязки: google или yandex\xe2A\x01\x02R\bprovider\"I\n" +
 	"\x14LinkIdentityResponse\x121\n" +
-	"\bidentity\x18\x01 \x01(\v2\x0f.users.IdentityB\x04\xe2A\x01\x02R\bidentity\"y\n" +
-	"\x15UnlinkIdentityRequest\x12`\n" +
-	"\bprovider\x18\x01 \x01(\tBD\x92A=2;Провайдер, который отвязать: google\xe2A\x01\x02R\bprovider\"\x18\n" +
+	"\bidentity\x18\x01 \x01(\v2\x0f.users.IdentityB\x04\xe2A\x01\x02R\bidentity\"|\n" +
+	"\x15UnlinkIdentityRequest\x12c\n" +
+	"\bprovider\x18\x01 \x01(\tBG\x92A@2>Провайдер для отвязки: google или yandex\xe2A\x01\x02R\bprovider\"\x18\n" +
 	"\x16UnlinkIdentityResponse\"\xbb\x01\n" +
 	"\bIdentity\x12 \n" +
 	"\bprovider\x18\x01 \x01(\tB\x04\xe2A\x01\x02R\bprovider\x12\x1c\n" +
