@@ -364,6 +364,174 @@ func (x *GetAvatarResponse) GetUrl() string {
 	return ""
 }
 
+type GetAvatarFileRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAvatarFileRequest) Reset() {
+	*x = GetAvatarFileRequest{}
+	mi := &file_users_user_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAvatarFileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAvatarFileRequest) ProtoMessage() {}
+
+func (x *GetAvatarFileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_users_user_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAvatarFileRequest.ProtoReflect.Descriptor instead.
+func (*GetAvatarFileRequest) Descriptor() ([]byte, []int) {
+	return file_users_user_proto_rawDescGZIP(), []int{7}
+}
+
+type GetAvatarFileResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileId        *string                `protobuf:"bytes,1,opt,name=file_id,json=fileId,proto3,oneof" json:"file_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAvatarFileResponse) Reset() {
+	*x = GetAvatarFileResponse{}
+	mi := &file_users_user_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAvatarFileResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAvatarFileResponse) ProtoMessage() {}
+
+func (x *GetAvatarFileResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_users_user_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAvatarFileResponse.ProtoReflect.Descriptor instead.
+func (*GetAvatarFileResponse) Descriptor() ([]byte, []int) {
+	return file_users_user_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetAvatarFileResponse) GetFileId() string {
+	if x != nil && x.FileId != nil {
+		return *x.FileId
+	}
+	return ""
+}
+
+type SetAvatarFileRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileId        string                 `protobuf:"bytes,1,opt,name=file_id,json=fileId,proto3" json:"file_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SetAvatarFileRequest) Reset() {
+	*x = SetAvatarFileRequest{}
+	mi := &file_users_user_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SetAvatarFileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetAvatarFileRequest) ProtoMessage() {}
+
+func (x *SetAvatarFileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_users_user_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetAvatarFileRequest.ProtoReflect.Descriptor instead.
+func (*SetAvatarFileRequest) Descriptor() ([]byte, []int) {
+	return file_users_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *SetAvatarFileRequest) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+type SetAvatarFileResponse struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	PreviousFileId *string                `protobuf:"bytes,1,opt,name=previous_file_id,json=previousFileId,proto3,oneof" json:"previous_file_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *SetAvatarFileResponse) Reset() {
+	*x = SetAvatarFileResponse{}
+	mi := &file_users_user_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SetAvatarFileResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetAvatarFileResponse) ProtoMessage() {}
+
+func (x *SetAvatarFileResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_users_user_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetAvatarFileResponse.ProtoReflect.Descriptor instead.
+func (*SetAvatarFileResponse) Descriptor() ([]byte, []int) {
+	return file_users_user_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SetAvatarFileResponse) GetPreviousFileId() string {
+	if x != nil && x.PreviousFileId != nil {
+		return *x.PreviousFileId
+	}
+	return ""
+}
+
 type UpdateAvatarRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Image         []byte                 `protobuf:"bytes,1,opt,name=image,proto3" json:"image,omitempty"`
@@ -373,7 +541,7 @@ type UpdateAvatarRequest struct {
 
 func (x *UpdateAvatarRequest) Reset() {
 	*x = UpdateAvatarRequest{}
-	mi := &file_users_user_proto_msgTypes[7]
+	mi := &file_users_user_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -385,7 +553,7 @@ func (x *UpdateAvatarRequest) String() string {
 func (*UpdateAvatarRequest) ProtoMessage() {}
 
 func (x *UpdateAvatarRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_users_user_proto_msgTypes[7]
+	mi := &file_users_user_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -398,7 +566,7 @@ func (x *UpdateAvatarRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAvatarRequest.ProtoReflect.Descriptor instead.
 func (*UpdateAvatarRequest) Descriptor() ([]byte, []int) {
-	return file_users_user_proto_rawDescGZIP(), []int{7}
+	return file_users_user_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UpdateAvatarRequest) GetImage() []byte {
@@ -416,7 +584,7 @@ type UpdateAvatarResponse struct {
 
 func (x *UpdateAvatarResponse) Reset() {
 	*x = UpdateAvatarResponse{}
-	mi := &file_users_user_proto_msgTypes[8]
+	mi := &file_users_user_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -428,7 +596,7 @@ func (x *UpdateAvatarResponse) String() string {
 func (*UpdateAvatarResponse) ProtoMessage() {}
 
 func (x *UpdateAvatarResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_users_user_proto_msgTypes[8]
+	mi := &file_users_user_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -441,7 +609,7 @@ func (x *UpdateAvatarResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAvatarResponse.ProtoReflect.Descriptor instead.
 func (*UpdateAvatarResponse) Descriptor() ([]byte, []int) {
-	return file_users_user_proto_rawDescGZIP(), []int{8}
+	return file_users_user_proto_rawDescGZIP(), []int{12}
 }
 
 type DeleteAvatarRequest struct {
@@ -452,7 +620,7 @@ type DeleteAvatarRequest struct {
 
 func (x *DeleteAvatarRequest) Reset() {
 	*x = DeleteAvatarRequest{}
-	mi := &file_users_user_proto_msgTypes[9]
+	mi := &file_users_user_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -464,7 +632,7 @@ func (x *DeleteAvatarRequest) String() string {
 func (*DeleteAvatarRequest) ProtoMessage() {}
 
 func (x *DeleteAvatarRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_users_user_proto_msgTypes[9]
+	mi := &file_users_user_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -477,7 +645,7 @@ func (x *DeleteAvatarRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAvatarRequest.ProtoReflect.Descriptor instead.
 func (*DeleteAvatarRequest) Descriptor() ([]byte, []int) {
-	return file_users_user_proto_rawDescGZIP(), []int{9}
+	return file_users_user_proto_rawDescGZIP(), []int{13}
 }
 
 type DeleteAvatarResponse struct {
@@ -488,7 +656,7 @@ type DeleteAvatarResponse struct {
 
 func (x *DeleteAvatarResponse) Reset() {
 	*x = DeleteAvatarResponse{}
-	mi := &file_users_user_proto_msgTypes[10]
+	mi := &file_users_user_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -500,7 +668,7 @@ func (x *DeleteAvatarResponse) String() string {
 func (*DeleteAvatarResponse) ProtoMessage() {}
 
 func (x *DeleteAvatarResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_users_user_proto_msgTypes[10]
+	mi := &file_users_user_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -513,7 +681,7 @@ func (x *DeleteAvatarResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAvatarResponse.ProtoReflect.Descriptor instead.
 func (*DeleteAvatarResponse) Descriptor() ([]byte, []int) {
-	return file_users_user_proto_rawDescGZIP(), []int{10}
+	return file_users_user_proto_rawDescGZIP(), []int{14}
 }
 
 var File_users_user_proto protoreflect.FileDescriptor
@@ -545,7 +713,17 @@ const file_users_user_proto_rawDesc = "" +
 	"\x10GetAvatarRequest\"2\n" +
 	"\x11GetAvatarResponse\x12\x15\n" +
 	"\x03url\x18\x01 \x01(\tH\x00R\x03url\x88\x01\x01B\x06\n" +
-	"\x04_url\"1\n" +
+	"\x04_url\"\x16\n" +
+	"\x14GetAvatarFileRequest\"A\n" +
+	"\x15GetAvatarFileResponse\x12\x1c\n" +
+	"\afile_id\x18\x01 \x01(\tH\x00R\x06fileId\x88\x01\x01B\n" +
+	"\n" +
+	"\b_file_id\"5\n" +
+	"\x14SetAvatarFileRequest\x12\x1d\n" +
+	"\afile_id\x18\x01 \x01(\tB\x04\xe2A\x01\x02R\x06fileId\"[\n" +
+	"\x15SetAvatarFileResponse\x12-\n" +
+	"\x10previous_file_id\x18\x01 \x01(\tH\x00R\x0epreviousFileId\x88\x01\x01B\x13\n" +
+	"\x11_previous_file_id\"1\n" +
 	"\x13UpdateAvatarRequest\x12\x1a\n" +
 	"\x05image\x18\x01 \x01(\fB\x04\xe2A\x01\x02R\x05image\"\x16\n" +
 	"\x14UpdateAvatarResponse\"\x15\n" +
@@ -564,7 +742,7 @@ func file_users_user_proto_rawDescGZIP() []byte {
 	return file_users_user_proto_rawDescData
 }
 
-var file_users_user_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_users_user_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_users_user_proto_goTypes = []any{
 	(*GetMeRequest)(nil),          // 0: users.GetMeRequest
 	(*GetMeResponse)(nil),         // 1: users.GetMeResponse
@@ -573,15 +751,19 @@ var file_users_user_proto_goTypes = []any{
 	(*UpdateProfileResponse)(nil), // 4: users.UpdateProfileResponse
 	(*GetAvatarRequest)(nil),      // 5: users.GetAvatarRequest
 	(*GetAvatarResponse)(nil),     // 6: users.GetAvatarResponse
-	(*UpdateAvatarRequest)(nil),   // 7: users.UpdateAvatarRequest
-	(*UpdateAvatarResponse)(nil),  // 8: users.UpdateAvatarResponse
-	(*DeleteAvatarRequest)(nil),   // 9: users.DeleteAvatarRequest
-	(*DeleteAvatarResponse)(nil),  // 10: users.DeleteAvatarResponse
-	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*GetAvatarFileRequest)(nil),  // 7: users.GetAvatarFileRequest
+	(*GetAvatarFileResponse)(nil), // 8: users.GetAvatarFileResponse
+	(*SetAvatarFileRequest)(nil),  // 9: users.SetAvatarFileRequest
+	(*SetAvatarFileResponse)(nil), // 10: users.SetAvatarFileResponse
+	(*UpdateAvatarRequest)(nil),   // 11: users.UpdateAvatarRequest
+	(*UpdateAvatarResponse)(nil),  // 12: users.UpdateAvatarResponse
+	(*DeleteAvatarRequest)(nil),   // 13: users.DeleteAvatarRequest
+	(*DeleteAvatarResponse)(nil),  // 14: users.DeleteAvatarResponse
+	(*timestamppb.Timestamp)(nil), // 15: google.protobuf.Timestamp
 }
 var file_users_user_proto_depIdxs = []int32{
 	2,  // 0: users.GetMeResponse.user:type_name -> users.User
-	11, // 1: users.User.created_at:type_name -> google.protobuf.Timestamp
+	15, // 1: users.User.created_at:type_name -> google.protobuf.Timestamp
 	2,  // 2: users.UpdateProfileResponse.user:type_name -> users.User
 	3,  // [3:3] is the sub-list for method output_type
 	3,  // [3:3] is the sub-list for method input_type
@@ -598,13 +780,15 @@ func file_users_user_proto_init() {
 	file_users_user_proto_msgTypes[2].OneofWrappers = []any{}
 	file_users_user_proto_msgTypes[3].OneofWrappers = []any{}
 	file_users_user_proto_msgTypes[6].OneofWrappers = []any{}
+	file_users_user_proto_msgTypes[8].OneofWrappers = []any{}
+	file_users_user_proto_msgTypes[10].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_users_user_proto_rawDesc), len(file_users_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

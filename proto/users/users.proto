@@ -216,6 +216,8 @@ service UsersService {
     };
   }
 
+  rpc GetAvatarFile(GetAvatarFileRequest) returns (GetAvatarFileResponse);
+  rpc SetAvatarFile(SetAvatarFileRequest) returns (SetAvatarFileResponse);
   rpc UpdateAvatar(UpdateAvatarRequest) returns (UpdateAvatarResponse) {
     option (google.api.http) = {
       patch: "/api/v1/users/me/avatar"
