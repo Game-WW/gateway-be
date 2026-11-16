@@ -6,7 +6,6 @@ option go_package = "github.com/Game-WW/gateway-be/gen/files;filespb";
 
 message UploadFileRequest {
   // Данные нового аватара. Пустое значение удаляет текущий аватар.
-  // Пользователь определяется по x-user-id в metadata.
   bytes image = 1;
 }
 
