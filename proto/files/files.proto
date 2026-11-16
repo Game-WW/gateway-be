@@ -5,17 +5,16 @@ package files.v1;
 option go_package = "github.com/Game-WW/gateway-be/gen/files;filespb";
 
 service MediaService {
-  rpc UploadAvatar(UploadAvatarRequest) returns (UploadAvatarResponse);
-  
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
   rpc GetFile(GetFileRequest) returns (GetFileResponse);
   rpc DeleteFile(DeleteFileRequest) returns (DeleteFileResponse);
 }
 
-message UploadAvatarRequest {
+message UploadFileRequest {
   bytes image = 1;
 }
 
-message UploadAvatarResponse {
+message UploadFileResponse {
   string file_id = 1;
   string url = 2;
 }
