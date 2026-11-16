@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package files.v1;
+
+option go_package = "github.com/Game-WW/gateway-be/gen/files;filespb";
+
+message UploadFileRequest {
+  // Данные нового аватара. Пустое значение удаляет текущий аватар.
+  // Пользователь определяется по x-user-id в metadata.
+  bytes image = 1;
+}
+
+// После удаления аватара file_id и url пустые.
+message UploadFileResponse {
+  string file_id = 1;
+  string url = 2;
+}
+
+message GetFileRequest {
+  string file_id = 1;
+}
+
+message GetFileResponse {
+  string file_id = 1;
+  string url = 2;
+  string content_type = 3;
+}
+

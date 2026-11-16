@@ -21,7 +21,6 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	MediaService_UploadFile_FullMethodName = "/files.v1.MediaService/UploadFile"
 	MediaService_GetFile_FullMethodName    = "/files.v1.MediaService/GetFile"
-	MediaService_DeleteFile_FullMethodName = "/files.v1.MediaService/DeleteFile"
 )
 
 // MediaServiceClient is the client API for MediaService service.
@@ -30,7 +29,6 @@ const (
 type MediaServiceClient interface {
 	UploadFile(ctx context.Context, in *UploadFileRequest, opts ...grpc.CallOption) (*UploadFileResponse, error)
 	GetFile(ctx context.Context, in *GetFileRequest, opts ...grpc.CallOption) (*GetFileResponse, error)
-	DeleteFile(ctx context.Context, in *DeleteFileRequest, opts ...grpc.CallOption) (*DeleteFileResponse, error)
 }
 
 type mediaServiceClient struct {
@@ -61,23 +59,12 @@ func (c *mediaServiceClient) GetFile(ctx context.Context, in *GetFileRequest, op
 	return out, nil
 }
 
-func (c *mediaServiceClient) DeleteFile(ctx context.Context, in *DeleteFileRequest, opts ...grpc.CallOption) (*DeleteFileResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteFileResponse)
-	err := c.cc.Invoke(ctx, MediaService_DeleteFile_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MediaServiceServer is the server API for MediaService service.
 // All implementations must embed UnimplementedMediaServiceServer
 // for forward compatibility.
 type MediaServiceServer interface {
 	UploadFile(context.Context, *UploadFileRequest) (*UploadFileResponse, error)
 	GetFile(context.Context, *GetFileRequest) (*GetFileResponse, error)
-	DeleteFile(context.Context, *DeleteFileRequest) (*DeleteFileResponse, error)
 	mustEmbedUnimplementedMediaServiceServer()
 }
 
@@ -93,9 +80,6 @@ func (UnimplementedMediaServiceServer) UploadFile(context.Context, *UploadFileRe
 }
 func (UnimplementedMediaServiceServer) GetFile(context.Context, *GetFileRequest) (*GetFileResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFile not implemented")
-}
-func (UnimplementedMediaServiceServer) DeleteFile(context.Context, *DeleteFileRequest) (*DeleteFileResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method DeleteFile not implemented")
 }
 func (UnimplementedMediaServiceServer) mustEmbedUnimplementedMediaServiceServer() {}
 func (UnimplementedMediaServiceServer) testEmbeddedByValue()                      {}
@@ -154,24 +138,6 @@ func _MediaService_GetFile_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MediaService_DeleteFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteFileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MediaServiceServer).DeleteFile(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: MediaService_DeleteFile_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MediaServiceServer).DeleteFile(ctx, req.(*DeleteFileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // MediaService_ServiceDesc is the grpc.ServiceDesc for MediaService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -186,10 +152,6 @@ var MediaService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFile",
 			Handler:    _MediaService_GetFile_Handler,
-		},
-		{
-			MethodName: "DeleteFile",
-			Handler:    _MediaService_DeleteFile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
