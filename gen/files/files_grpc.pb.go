@@ -28,7 +28,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MediaServiceClient interface {
-	UploadFile(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadAvatarRequest, UploadFileResponse], error)
+	UploadFile(ctx context.Context, in *UploadAvatarRequest, opts ...grpc.CallOption) (*UploadFileResponse, error)
 	GetFile(ctx context.Context, in *GetFileRequest, opts ...grpc.CallOption) (*GetFileResponse, error)
 	DeleteFile(ctx context.Context, in *DeleteFileRequest, opts ...grpc.CallOption) (*DeleteFileResponse, error)
 }
@@ -41,18 +41,15 @@ func NewMediaServiceClient(cc grpc.ClientConnInterface) MediaServiceClient {
 	return &mediaServiceClient{cc}
 }
 
-func (c *mediaServiceClient) UploadFile(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadAvatarRequest, UploadFileResponse], error) {
+func (c *mediaServiceClient) UploadFile(ctx context.Context, in *UploadAvatarRequest, opts ...grpc.CallOption) (*UploadFileResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &MediaService_ServiceDesc.Streams[0], MediaService_UploadFile_FullMethodName, cOpts...)
+	out := new(UploadFileResponse)
+	err := c.cc.Invoke(ctx, MediaService_UploadFile_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[UploadAvatarRequest, UploadFileResponse]{ClientStream: stream}
-	return x, nil
+	return out, nil
 }
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type MediaService_UploadFileClient = grpc.ClientStreamingClient[UploadAvatarRequest, UploadFileResponse]
 
 func (c *mediaServiceClient) GetFile(ctx context.Context, in *GetFileRequest, opts ...grpc.CallOption) (*GetFileResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -78,7 +75,7 @@ func (c *mediaServiceClient) DeleteFile(ctx context.Context, in *DeleteFileReque
 // All implementations must embed UnimplementedMediaServiceServer
 // for forward compatibility.
 type MediaServiceServer interface {
-	UploadFile(grpc.ClientStreamingServer[UploadAvatarRequest, UploadFileResponse]) error
+	UploadFile(context.Context, *UploadAvatarRequest) (*UploadFileResponse, error)
 	GetFile(context.Context, *GetFileRequest) (*GetFileResponse, error)
 	DeleteFile(context.Context, *DeleteFileRequest) (*DeleteFileResponse, error)
 	mustEmbedUnimplementedMediaServiceServer()
@@ -91,8 +88,8 @@ type MediaServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMediaServiceServer struct{}
 
-func (UnimplementedMediaServiceServer) UploadFile(grpc.ClientStreamingServer[UploadAvatarRequest, UploadFileResponse]) error {
-	return status.Error(codes.Unimplemented, "method UploadFile not implemented")
+func (UnimplementedMediaServiceServer) UploadFile(context.Context, *UploadAvatarRequest) (*UploadFileResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UploadFile not implemented")
 }
 func (UnimplementedMediaServiceServer) GetFile(context.Context, *GetFileRequest) (*GetFileResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFile not implemented")
@@ -121,12 +118,23 @@ func RegisterMediaServiceServer(s grpc.ServiceRegistrar, srv MediaServiceServer)
 	s.RegisterService(&MediaService_ServiceDesc, srv)
 }
 
-func _MediaService_UploadFile_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(MediaServiceServer).UploadFile(&grpc.GenericServerStream[UploadAvatarRequest, UploadFileResponse]{ServerStream: stream})
+func _MediaService_UploadFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadAvatarRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MediaServiceServer).UploadFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MediaService_UploadFile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MediaServiceServer).UploadFile(ctx, req.(*UploadAvatarRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type MediaService_UploadFileServer = grpc.ClientStreamingServer[UploadAvatarRequest, UploadFileResponse]
 
 func _MediaService_GetFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetFileRequest)
@@ -172,6 +180,10 @@ var MediaService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MediaServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "UploadFile",
+			Handler:    _MediaService_UploadFile_Handler,
+		},
+		{
 			MethodName: "GetFile",
 			Handler:    _MediaService_GetFile_Handler,
 		},
@@ -180,12 +192,6 @@ var MediaService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MediaService_DeleteFile_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "UploadFile",
-			Handler:       _MediaService_UploadFile_Handler,
-			ClientStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "files/files.proto",
 }

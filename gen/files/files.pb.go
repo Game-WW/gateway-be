@@ -319,10 +319,10 @@ const file_files_files_proto_rawDesc = "" +
 	"\fcontent_type\x18\x03 \x01(\tR\vcontentType\",\n" +
 	"\x11DeleteFileRequest\x12\x17\n" +
 	"\afile_id\x18\x01 \x01(\tR\x06fileId\"\x14\n" +
-	"\x12DeleteFileResponse2\xe4\x01\n" +
-	"\fMediaService\x12K\n" +
+	"\x12DeleteFileResponse2\xe2\x01\n" +
+	"\fMediaService\x12I\n" +
 	"\n" +
-	"UploadFile\x12\x1d.files.v1.UploadAvatarRequest\x1a\x1c.files.v1.UploadFileResponse(\x01\x12>\n" +
+	"UploadFile\x12\x1d.files.v1.UploadAvatarRequest\x1a\x1c.files.v1.UploadFileResponse\x12>\n" +
 	"\aGetFile\x12\x18.files.v1.GetFileRequest\x1a\x19.files.v1.GetFileResponse\x12G\n" +
 	"\n" +
 	"DeleteFile\x12\x1b.files.v1.DeleteFileRequest\x1a\x1c.files.v1.DeleteFileResponseB1Z/github.com/Game-WW/gateway-be/gen/files;filespbb\x06proto3"
