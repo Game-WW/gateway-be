@@ -65,7 +65,7 @@ func (x *UploadAvatarRequest) GetImage() []byte {
 	return nil
 }
 
-type UploadFileResponse struct {
+type UploadAvatarResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	FileId        string                 `protobuf:"bytes,1,opt,name=file_id,json=fileId,proto3" json:"file_id,omitempty"`
 	Url           string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
@@ -73,20 +73,20 @@ type UploadFileResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UploadFileResponse) Reset() {
-	*x = UploadFileResponse{}
+func (x *UploadAvatarResponse) Reset() {
+	*x = UploadAvatarResponse{}
 	mi := &file_files_files_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UploadFileResponse) String() string {
+func (x *UploadAvatarResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UploadFileResponse) ProtoMessage() {}
+func (*UploadAvatarResponse) ProtoMessage() {}
 
-func (x *UploadFileResponse) ProtoReflect() protoreflect.Message {
+func (x *UploadAvatarResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_files_files_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,19 +98,19 @@ func (x *UploadFileResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UploadFileResponse.ProtoReflect.Descriptor instead.
-func (*UploadFileResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use UploadAvatarResponse.ProtoReflect.Descriptor instead.
+func (*UploadAvatarResponse) Descriptor() ([]byte, []int) {
 	return file_files_files_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UploadFileResponse) GetFileId() string {
+func (x *UploadAvatarResponse) GetFileId() string {
 	if x != nil {
 		return x.FileId
 	}
 	return ""
 }
 
-func (x *UploadFileResponse) GetUrl() string {
+func (x *UploadAvatarResponse) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
@@ -307,8 +307,8 @@ const file_files_files_proto_rawDesc = "" +
 	"\n" +
 	"\x11files/files.proto\x12\bfiles.v1\"+\n" +
 	"\x13UploadAvatarRequest\x12\x14\n" +
-	"\x05image\x18\x01 \x01(\fR\x05image\"?\n" +
-	"\x12UploadFileResponse\x12\x17\n" +
+	"\x05image\x18\x01 \x01(\fR\x05image\"A\n" +
+	"\x14UploadAvatarResponse\x12\x17\n" +
 	"\afile_id\x18\x01 \x01(\tR\x06fileId\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\")\n" +
 	"\x0eGetFileRequest\x12\x17\n" +
@@ -319,10 +319,9 @@ const file_files_files_proto_rawDesc = "" +
 	"\fcontent_type\x18\x03 \x01(\tR\vcontentType\",\n" +
 	"\x11DeleteFileRequest\x12\x17\n" +
 	"\afile_id\x18\x01 \x01(\tR\x06fileId\"\x14\n" +
-	"\x12DeleteFileResponse2\xe2\x01\n" +
-	"\fMediaService\x12I\n" +
-	"\n" +
-	"UploadFile\x12\x1d.files.v1.UploadAvatarRequest\x1a\x1c.files.v1.UploadFileResponse\x12>\n" +
+	"\x12DeleteFileResponse2\xe6\x01\n" +
+	"\fMediaService\x12M\n" +
+	"\fUploadAvatar\x12\x1d.files.v1.UploadAvatarRequest\x1a\x1e.files.v1.UploadAvatarResponse\x12>\n" +
 	"\aGetFile\x12\x18.files.v1.GetFileRequest\x1a\x19.files.v1.GetFileResponse\x12G\n" +
 	"\n" +
 	"DeleteFile\x12\x1b.files.v1.DeleteFileRequest\x1a\x1c.files.v1.DeleteFileResponseB1Z/github.com/Game-WW/gateway-be/gen/files;filespbb\x06proto3"
@@ -341,18 +340,18 @@ func file_files_files_proto_rawDescGZIP() []byte {
 
 var file_files_files_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_files_files_proto_goTypes = []any{
-	(*UploadAvatarRequest)(nil), // 0: files.v1.UploadAvatarRequest
-	(*UploadFileResponse)(nil),  // 1: files.v1.UploadFileResponse
-	(*GetFileRequest)(nil),      // 2: files.v1.GetFileRequest
-	(*GetFileResponse)(nil),     // 3: files.v1.GetFileResponse
-	(*DeleteFileRequest)(nil),   // 4: files.v1.DeleteFileRequest
-	(*DeleteFileResponse)(nil),  // 5: files.v1.DeleteFileResponse
+	(*UploadAvatarRequest)(nil),  // 0: files.v1.UploadAvatarRequest
+	(*UploadAvatarResponse)(nil), // 1: files.v1.UploadAvatarResponse
+	(*GetFileRequest)(nil),       // 2: files.v1.GetFileRequest
+	(*GetFileResponse)(nil),      // 3: files.v1.GetFileResponse
+	(*DeleteFileRequest)(nil),    // 4: files.v1.DeleteFileRequest
+	(*DeleteFileResponse)(nil),   // 5: files.v1.DeleteFileResponse
 }
 var file_files_files_proto_depIdxs = []int32{
-	0, // 0: files.v1.MediaService.UploadFile:input_type -> files.v1.UploadAvatarRequest
+	0, // 0: files.v1.MediaService.UploadAvatar:input_type -> files.v1.UploadAvatarRequest
 	2, // 1: files.v1.MediaService.GetFile:input_type -> files.v1.GetFileRequest
 	4, // 2: files.v1.MediaService.DeleteFile:input_type -> files.v1.DeleteFileRequest
-	1, // 3: files.v1.MediaService.UploadFile:output_type -> files.v1.UploadFileResponse
+	1, // 3: files.v1.MediaService.UploadAvatar:output_type -> files.v1.UploadAvatarResponse
 	3, // 4: files.v1.MediaService.GetFile:output_type -> files.v1.GetFileResponse
 	5, // 5: files.v1.MediaService.DeleteFile:output_type -> files.v1.DeleteFileResponse
 	3, // [3:6] is the sub-list for method output_type
