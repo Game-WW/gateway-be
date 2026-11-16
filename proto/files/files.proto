@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package files.v1;
 
-option go_package = "github.com/Game-WW/gateway-be/gen/files/v1;filespb";
+option go_package = "github.com/Game-WW/gateway-be/gen/files;filespb";
 
 service FilesService {
   rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse);
