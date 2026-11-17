@@ -44,24 +44,16 @@ message GetAvatarResponse {
 
 message GetAvatarFileRequest {}
 
-message GetAvatarFileResponse {
-  optional string file_id = 1;
-}
+message GetAvatarFileResponse {}
 
-message SetAvatarFileRequest {
+message SetAvatarFileIDRequest {
   string file_id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-message SetAvatarFileResponse {
-  optional string previous_file_id = 1;
-}
+message SetAvatarFileIDResponse {}
 
 message UpdateAvatarRequest {
-  bytes image = 1 [(google.api.field_behavior) = REQUIRED];
+  bytes image = 1;
 }
 
 message UpdateAvatarResponse {}
-
-message DeleteAvatarRequest {}
-
-message DeleteAvatarResponse {}

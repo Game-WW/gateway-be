@@ -509,34 +509,6 @@
           "users"
         ]
       },
-      "delete": {
-        "summary": "Удалить аватар",
-        "description": "Удаляет аватар.",
-        "operationId": "UsersService_DeleteAvatar",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/DeleteAvatarResponse"
-            }
-          },
-          "401": {
-            "description": "Нет cookie access_token или токен истёк",
-            "schema": {
-              "$ref": "#/definitions/Status"
-            }
-          },
-          "500": {
-            "description": "Ошибка при удалении аватара",
-            "schema": {
-              "$ref": "#/definitions/Status"
-            }
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      },
       "patch": {
         "summary": "Обновить аватар",
         "description": "Обновляет аватар.",
@@ -592,9 +564,6 @@
         }
       },
       "additionalProperties": true
-    },
-    "DeleteAvatarResponse": {
-      "type": "object"
     },
     "GetAvatarResponse": {
       "type": "object",
@@ -695,10 +664,7 @@
           "type": "string",
           "format": "byte"
         }
-      },
-      "required": [
-        "image"
-      ]
+      }
     },
     "UpdateAvatarResponse": {
       "type": "object"

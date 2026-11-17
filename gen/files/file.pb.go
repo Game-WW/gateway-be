@@ -24,7 +24,6 @@ const (
 type UploadFileRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Данные нового аватара. Пустое значение удаляет текущий аватар.
-	// Пользователь определяется по x-user-id в metadata.
 	Image         []byte `protobuf:"bytes,1,opt,name=image,proto3" json:"image,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

@@ -36,13 +36,20 @@ func main() {
 	}
 	defer usersConn.Close()
 
-	mux, err := proxy.NewMux(context.Background(), usersConn, cfg.CookieSecure)
+	mediaConn, err := client.NewConn(cfg.MediaGRPCAddr)
+	if err != nil {
+		log.Fatalf("fatal: %v", err)
+	}
+	defer mediaConn.Close()
+
+	mux, err := proxy.NewMux(context.Background(), usersConn, mediaConn, cfg.CookieSecure)
 	if err != nil {
 		log.Fatalf("fatal: %v", err)
 	}
 
 	app := fiber.New(fiber.Config{
 		AppName:      "gateway",
+		BodyLimit:    8 << 20,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,

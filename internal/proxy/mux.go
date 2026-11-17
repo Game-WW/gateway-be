@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	filespb "github.com/Game-WW/gateway-be/gen/files"
 	userspb "github.com/Game-WW/gateway-be/gen/users"
 	"github.com/Game-WW/gateway-be/internal/middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -14,10 +15,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// Сколько ждём ответа сервиса, потом отдаём 504.
 const requestTimeout = 5 * time.Second
 
-// HTTP-заголовок запроса → ключ gRPC metadata.
 var incomingHeaders = map[string]string{
 	middleware.UserIDHeader:       "x-user-id",
 	middleware.UserAgentHeader:    "x-user-agent",
@@ -28,7 +27,12 @@ var incomingHeaders = map[string]string{
 	"X-Code-Verifier":             "x-code-verifier",
 }
 
-func NewMux(ctx context.Context, usersConn *grpc.ClientConn, cookieSecure bool) (http.Handler, error) {
+func NewMux(
+	ctx context.Context,
+	usersConn *grpc.ClientConn,
+	mediaConn *grpc.ClientConn,
+	cookieSecure bool,
+) (http.Handler, error) {
 	mux := runtime.NewServeMux(
 		runtime.WithIncomingHeaderMatcher(headerMatcher),
 		runtime.WithOutgoingHeaderMatcher(dropAll),
@@ -39,7 +43,12 @@ func NewMux(ctx context.Context, usersConn *grpc.ClientConn, cookieSecure bool) 
 		}),
 	)
 
-	if err := userspb.RegisterUsersServiceHandler(ctx, mux, usersConn); err != nil {
+	usersClient := newUsersClient(
+		userspb.NewUsersServiceClient(usersConn),
+		filespb.NewMediaServiceClient(mediaConn),
+	)
+
+	if err := userspb.RegisterUsersServiceHandlerClient(ctx, mux, usersClient); err != nil {
 		return nil, fmt.Errorf("proxy: register users: %w", err)
 	}
 
@@ -55,7 +64,6 @@ func withTimeout(next http.Handler) http.Handler {
 	})
 }
 
-// В metadata пропускаем только заголовки из incomingHeaders.
 func headerMatcher(key string) (string, bool) {
 	for header, metaKey := range incomingHeaders {
 		if strings.EqualFold(key, header) {

@@ -14,6 +14,7 @@ type Config struct {
 	UsersGRPCAddr  string `env:"USERS_GRPC_ADDR" envDefault:"127.0.0.1:50051"`
 	AllowedOrigins string `env:"ALLOWED_ORIGINS,required"`
 	CookieSecure   bool   `env:"COOKIE_SECURE"   envDefault:"true"`
+	MediaGRPCAddr  string `env:"MEDIA_GRPC_ADDR" envDefault:"127.0.0.1:50052"`
 }
 
 func Load() (*Config, error) {
@@ -50,6 +51,9 @@ func (c *Config) Validate() error {
 			parsed.User != nil || parsed.Path != "" || parsed.RawQuery != "" || parsed.Fragment != "" {
 			return fmt.Errorf("config: invalid ALLOWED_ORIGINS entry %q; expected an http(s) origin without a path", origin)
 		}
+	}
+	if c.MediaGRPCAddr == "" {
+		return fmt.Errorf("config: MEDIA_GRPC_ADDR is required")
 	}
 
 	return nil

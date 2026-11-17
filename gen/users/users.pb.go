@@ -26,7 +26,7 @@ var File_users_users_proto protoreflect.FileDescriptor
 
 const file_users_users_proto_rawDesc = "" +
 	"\n" +
-	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\x98:\n" +
+	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xbc7\n" +
 	"\fUsersService\x12\xea\x06\n" +
 	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xb5\x06\x92A\x8c\x06\n" +
 	"\x04auth\x129Вход через внешнего провайдера\x1a\xbc\x01Google принимает id_token в Authorization; Yandex принимает auth code в X-Auth-Code и, при PKCE, X-Code-Verifier. Ставит cookie access_token и refresh_token.J\x9a\x01\n" +
@@ -86,8 +86,8 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12O\n" +
 	"5Ошибка при получении аватара\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x19\x12\x17/api/v1/users/me/avatar\x12J\n" +
-	"\rGetAvatarFile\x12\x1b.users.GetAvatarFileRequest\x1a\x1c.users.GetAvatarFileResponse\x12J\n" +
-	"\rSetAvatarFile\x12\x1b.users.SetAvatarFileRequest\x1a\x1c.users.SetAvatarFileResponse\x12\xc7\x03\n" +
+	"\rGetAvatarFile\x12\x1b.users.GetAvatarFileRequest\x1a\x1c.users.GetAvatarFileResponse\x12P\n" +
+	"\x0fSetAvatarFileID\x12\x1d.users.SetAvatarFileIDRequest\x1a\x1e.users.SetAvatarFileIDResponse\x12\xc7\x03\n" +
 	"\fUpdateAvatar\x12\x1a.users.UpdateAvatarRequest\x1a\x1b.users.UpdateAvatarResponse\"\xfd\x02\x92A\xd7\x02\n" +
 	"\x05users\x12\x1dОбновить аватар\x1a Обновляет аватар.JY\n" +
 	"\x03400\x12R\n" +
@@ -98,15 +98,7 @@ const file_users_users_proto_rawDesc = "" +
 	"\x14\x1a\x12.google.rpc.StatusJX\n" +
 	"\x03500\x12Q\n" +
 	"7Ошибка при обновлении аватара\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x1c:\x01*2\x17/api/v1/users/me/avatar\x12\xdf\x02\n" +
-	"\fDeleteAvatar\x12\x1a.users.DeleteAvatarRequest\x1a\x1b.users.DeleteAvatarResponse\"\x95\x02\x92A\xf2\x01\n" +
-	"\x05users\x12\x1bУдалить аватар\x1a\x1cУдаляет аватар.JX\n" +
-	"\x03401\x12Q\n" +
-	"7Нет cookie access_token или токен истёк\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.StatusJT\n" +
-	"\x03500\x12M\n" +
-	"3Ошибка при удалении аватара\x12\x16\n" +
-	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x19*\x17/api/v1/users/me/avatar\x12\xe9\x04\n" +
+	"\x14\x1a\x12.google.rpc.Status\x82\xd3\xe4\x93\x02\x1c:\x01*2\x17/api/v1/users/me/avatar\x12\xe9\x04\n" +
 	"\rUpdateProfile\x12\x1b.users.UpdateProfileRequest\x1a\x1c.users.UpdateProfileResponse\"\x9c\x04\x92A\xfd\x03\n" +
 	"\x05users\x12\x1fИзменить профиль\x1ayОбновляет данные профиля текущего пользователя. Нужна cookie access_token.Jf\n" +
 	"\x03400\x12_\n" +
@@ -176,32 +168,30 @@ const file_users_users_proto_rawDesc = "" +
 	"\bidentity\x12bСпособы входа пользователя: список, привязка, отвязкаZ/github.com/Game-WW/gateway-be/gen/users;userspbb\x06proto3"
 
 var file_users_users_proto_goTypes = []any{
-	(*LoginRequest)(nil),           // 0: users.LoginRequest
-	(*RefreshRequest)(nil),         // 1: users.RefreshRequest
-	(*LogoutRequest)(nil),          // 2: users.LogoutRequest
-	(*GetMeRequest)(nil),           // 3: users.GetMeRequest
-	(*GetAvatarRequest)(nil),       // 4: users.GetAvatarRequest
-	(*GetAvatarFileRequest)(nil),   // 5: users.GetAvatarFileRequest
-	(*SetAvatarFileRequest)(nil),   // 6: users.SetAvatarFileRequest
-	(*UpdateAvatarRequest)(nil),    // 7: users.UpdateAvatarRequest
-	(*DeleteAvatarRequest)(nil),    // 8: users.DeleteAvatarRequest
-	(*UpdateProfileRequest)(nil),   // 9: users.UpdateProfileRequest
-	(*ListIdentitiesRequest)(nil),  // 10: users.ListIdentitiesRequest
-	(*LinkIdentityRequest)(nil),    // 11: users.LinkIdentityRequest
-	(*UnlinkIdentityRequest)(nil),  // 12: users.UnlinkIdentityRequest
-	(*LoginResponse)(nil),          // 13: users.LoginResponse
-	(*RefreshResponse)(nil),        // 14: users.RefreshResponse
-	(*LogoutResponse)(nil),         // 15: users.LogoutResponse
-	(*GetMeResponse)(nil),          // 16: users.GetMeResponse
-	(*GetAvatarResponse)(nil),      // 17: users.GetAvatarResponse
-	(*GetAvatarFileResponse)(nil),  // 18: users.GetAvatarFileResponse
-	(*SetAvatarFileResponse)(nil),  // 19: users.SetAvatarFileResponse
-	(*UpdateAvatarResponse)(nil),   // 20: users.UpdateAvatarResponse
-	(*DeleteAvatarResponse)(nil),   // 21: users.DeleteAvatarResponse
-	(*UpdateProfileResponse)(nil),  // 22: users.UpdateProfileResponse
-	(*ListIdentitiesResponse)(nil), // 23: users.ListIdentitiesResponse
-	(*LinkIdentityResponse)(nil),   // 24: users.LinkIdentityResponse
-	(*UnlinkIdentityResponse)(nil), // 25: users.UnlinkIdentityResponse
+	(*LoginRequest)(nil),            // 0: users.LoginRequest
+	(*RefreshRequest)(nil),          // 1: users.RefreshRequest
+	(*LogoutRequest)(nil),           // 2: users.LogoutRequest
+	(*GetMeRequest)(nil),            // 3: users.GetMeRequest
+	(*GetAvatarRequest)(nil),        // 4: users.GetAvatarRequest
+	(*GetAvatarFileRequest)(nil),    // 5: users.GetAvatarFileRequest
+	(*SetAvatarFileIDRequest)(nil),  // 6: users.SetAvatarFileIDRequest
+	(*UpdateAvatarRequest)(nil),     // 7: users.UpdateAvatarRequest
+	(*UpdateProfileRequest)(nil),    // 8: users.UpdateProfileRequest
+	(*ListIdentitiesRequest)(nil),   // 9: users.ListIdentitiesRequest
+	(*LinkIdentityRequest)(nil),     // 10: users.LinkIdentityRequest
+	(*UnlinkIdentityRequest)(nil),   // 11: users.UnlinkIdentityRequest
+	(*LoginResponse)(nil),           // 12: users.LoginResponse
+	(*RefreshResponse)(nil),         // 13: users.RefreshResponse
+	(*LogoutResponse)(nil),          // 14: users.LogoutResponse
+	(*GetMeResponse)(nil),           // 15: users.GetMeResponse
+	(*GetAvatarResponse)(nil),       // 16: users.GetAvatarResponse
+	(*GetAvatarFileResponse)(nil),   // 17: users.GetAvatarFileResponse
+	(*SetAvatarFileIDResponse)(nil), // 18: users.SetAvatarFileIDResponse
+	(*UpdateAvatarResponse)(nil),    // 19: users.UpdateAvatarResponse
+	(*UpdateProfileResponse)(nil),   // 20: users.UpdateProfileResponse
+	(*ListIdentitiesResponse)(nil),  // 21: users.ListIdentitiesResponse
+	(*LinkIdentityResponse)(nil),    // 22: users.LinkIdentityResponse
+	(*UnlinkIdentityResponse)(nil),  // 23: users.UnlinkIdentityResponse
 }
 var file_users_users_proto_depIdxs = []int32{
 	0,  // 0: users.UsersService.Login:input_type -> users.LoginRequest
@@ -210,28 +200,26 @@ var file_users_users_proto_depIdxs = []int32{
 	3,  // 3: users.UsersService.GetMe:input_type -> users.GetMeRequest
 	4,  // 4: users.UsersService.GetAvatar:input_type -> users.GetAvatarRequest
 	5,  // 5: users.UsersService.GetAvatarFile:input_type -> users.GetAvatarFileRequest
-	6,  // 6: users.UsersService.SetAvatarFile:input_type -> users.SetAvatarFileRequest
+	6,  // 6: users.UsersService.SetAvatarFileID:input_type -> users.SetAvatarFileIDRequest
 	7,  // 7: users.UsersService.UpdateAvatar:input_type -> users.UpdateAvatarRequest
-	8,  // 8: users.UsersService.DeleteAvatar:input_type -> users.DeleteAvatarRequest
-	9,  // 9: users.UsersService.UpdateProfile:input_type -> users.UpdateProfileRequest
-	10, // 10: users.UsersService.ListIdentities:input_type -> users.ListIdentitiesRequest
-	11, // 11: users.UsersService.LinkIdentity:input_type -> users.LinkIdentityRequest
-	12, // 12: users.UsersService.UnlinkIdentity:input_type -> users.UnlinkIdentityRequest
-	13, // 13: users.UsersService.Login:output_type -> users.LoginResponse
-	14, // 14: users.UsersService.Refresh:output_type -> users.RefreshResponse
-	15, // 15: users.UsersService.Logout:output_type -> users.LogoutResponse
-	16, // 16: users.UsersService.GetMe:output_type -> users.GetMeResponse
-	17, // 17: users.UsersService.GetAvatar:output_type -> users.GetAvatarResponse
-	18, // 18: users.UsersService.GetAvatarFile:output_type -> users.GetAvatarFileResponse
-	19, // 19: users.UsersService.SetAvatarFile:output_type -> users.SetAvatarFileResponse
-	20, // 20: users.UsersService.UpdateAvatar:output_type -> users.UpdateAvatarResponse
-	21, // 21: users.UsersService.DeleteAvatar:output_type -> users.DeleteAvatarResponse
-	22, // 22: users.UsersService.UpdateProfile:output_type -> users.UpdateProfileResponse
-	23, // 23: users.UsersService.ListIdentities:output_type -> users.ListIdentitiesResponse
-	24, // 24: users.UsersService.LinkIdentity:output_type -> users.LinkIdentityResponse
-	25, // 25: users.UsersService.UnlinkIdentity:output_type -> users.UnlinkIdentityResponse
-	13, // [13:26] is the sub-list for method output_type
-	0,  // [0:13] is the sub-list for method input_type
+	8,  // 8: users.UsersService.UpdateProfile:input_type -> users.UpdateProfileRequest
+	9,  // 9: users.UsersService.ListIdentities:input_type -> users.ListIdentitiesRequest
+	10, // 10: users.UsersService.LinkIdentity:input_type -> users.LinkIdentityRequest
+	11, // 11: users.UsersService.UnlinkIdentity:input_type -> users.UnlinkIdentityRequest
+	12, // 12: users.UsersService.Login:output_type -> users.LoginResponse
+	13, // 13: users.UsersService.Refresh:output_type -> users.RefreshResponse
+	14, // 14: users.UsersService.Logout:output_type -> users.LogoutResponse
+	15, // 15: users.UsersService.GetMe:output_type -> users.GetMeResponse
+	16, // 16: users.UsersService.GetAvatar:output_type -> users.GetAvatarResponse
+	17, // 17: users.UsersService.GetAvatarFile:output_type -> users.GetAvatarFileResponse
+	18, // 18: users.UsersService.SetAvatarFileID:output_type -> users.SetAvatarFileIDResponse
+	19, // 19: users.UsersService.UpdateAvatar:output_type -> users.UpdateAvatarResponse
+	20, // 20: users.UsersService.UpdateProfile:output_type -> users.UpdateProfileResponse
+	21, // 21: users.UsersService.ListIdentities:output_type -> users.ListIdentitiesResponse
+	22, // 22: users.UsersService.LinkIdentity:output_type -> users.LinkIdentityResponse
+	23, // 23: users.UsersService.UnlinkIdentity:output_type -> users.UnlinkIdentityResponse
+	12, // [12:24] is the sub-list for method output_type
+	0,  // [0:12] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
