@@ -367,6 +367,52 @@
         ]
       }
     },
+    "/api/v1/users/avatar": {
+      "patch": {
+        "summary": "Обновить аватар",
+        "description": "Обновляет аватар.",
+        "operationId": "UsersService_UpdateAvatar",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateAvatarResponse"
+            }
+          },
+          "400": {
+            "description": "Некорректный файл изображения",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "401": {
+            "description": "Нет cookie access_token или токен истёк",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "500": {
+            "description": "Ошибка при обновлении аватара",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateAvatarRequest"
+            }
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/api/v1/users/me": {
       "get": {
         "summary": "Текущий пользователь",
@@ -474,20 +520,20 @@
         ]
       }
     },
-    "/api/v1/users/me/avatar": {
-      "patch": {
-        "summary": "Обновить аватар",
-        "description": "Обновляет аватар.",
-        "operationId": "UsersService_UpdateAvatar",
+    "/api/v1/users/{user_id}/avatar": {
+      "get": {
+        "summary": "Получить аватар игрока",
+        "description": "Возвращает аватар игрока в поле image в кодировке Base64. Если аватар не установлен, ответ 200 без поля image. Нужна cookie access_token.",
+        "operationId": "UsersService_GetAvatar",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/UpdateAvatarResponse"
+              "$ref": "#/definitions/GetAvatarResponse"
             }
           },
           "400": {
-            "description": "Некорректный файл изображения",
+            "description": "Некорректный ID игрока",
             "schema": {
               "$ref": "#/definitions/Status"
             }
@@ -499,7 +545,7 @@
             }
           },
           "500": {
-            "description": "Ошибка при обновлении аватара",
+            "description": "Ошибка при получении аватара",
             "schema": {
               "$ref": "#/definitions/Status"
             }
@@ -507,12 +553,10 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "user_id",
+            "in": "path",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/UpdateAvatarRequest"
-            }
+            "type": "string"
           }
         ],
         "tags": [
@@ -530,6 +574,15 @@
         }
       },
       "additionalProperties": true
+    },
+    "GetAvatarResponse": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "GetMeResponse": {
       "type": "object",
@@ -668,9 +721,6 @@
         },
         "show_online_status": {
           "type": "boolean"
-        },
-        "avatar_url": {
-          "type": "string"
         }
       },
       "required": [

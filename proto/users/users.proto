@@ -186,9 +186,39 @@ service UsersService {
     };
   }
 
+  rpc GetAvatar(GetAvatarRequest) returns (GetAvatarResponse) {
+    option (google.api.http) = {get: "/api/v1/users/{user_id}/avatar"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "users"
+      summary: "Получить аватар игрока"
+      description: "Возвращает аватар игрока в поле image в кодировке Base64. Если аватар не установлен, ответ 200 без поля image. Нужна cookie access_token."
+      responses: {
+        key: "400"
+        value: {
+          description: "Некорректный ID игрока"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "401"
+        value: {
+          description: "Нет cookie access_token или токен истёк"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "Ошибка при получении аватара"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
   rpc UpdateAvatar(UpdateAvatarRequest) returns (UpdateAvatarResponse) {
     option (google.api.http) = {
-      patch: "/api/v1/users/me/avatar"
+      patch: "/api/v1/users/avatar"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
