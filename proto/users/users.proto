@@ -186,38 +186,6 @@ service UsersService {
     };
   }
 
-  rpc GetAvatar(GetAvatarRequest) returns (GetAvatarResponse) {
-    option (google.api.http) = {get: "/api/v1/users/me/avatar"};
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "users"
-      summary: "Получить аватар"
-      description: "Возвращает URL аватара."
-      responses: {
-        key: "401"
-        value: {
-          description: "Нет cookie access_token или токен истёк"
-          schema: {json_schema: {ref: ".google.rpc.Status"}}
-        }
-      }
-      responses: {
-        key: "404"
-        value: {
-          description: "Аватар не найден"
-          schema: {json_schema: {ref: ".google.rpc.Status"}}
-        }
-      }
-      responses: {
-        key: "500"
-        value: {
-          description: "Ошибка при получении аватара"
-          schema: {json_schema: {ref: ".google.rpc.Status"}}
-        }
-      }
-    };
-  }
-
-  rpc GetAvatarFile(GetAvatarFileRequest) returns (GetAvatarFileResponse);
-  rpc SetAvatarFileID(SetAvatarFileIDRequest) returns (SetAvatarFileIDResponse);
   rpc UpdateAvatar(UpdateAvatarRequest) returns (UpdateAvatarResponse) {
     option (google.api.http) = {
       patch: "/api/v1/users/me/avatar"

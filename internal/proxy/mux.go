@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	filespb "github.com/Game-WW/gateway-be/gen/files"
 	userspb "github.com/Game-WW/gateway-be/gen/users"
 	"github.com/Game-WW/gateway-be/internal/middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -30,7 +29,6 @@ var incomingHeaders = map[string]string{
 func NewMux(
 	ctx context.Context,
 	usersConn *grpc.ClientConn,
-	mediaConn *grpc.ClientConn,
 	cookieSecure bool,
 ) (http.Handler, error) {
 	mux := runtime.NewServeMux(
@@ -43,11 +41,7 @@ func NewMux(
 		}),
 	)
 
-	usersClient := newUsersClient(
-		userspb.NewUsersServiceClient(usersConn),
-		filespb.NewMediaServiceClient(mediaConn),
-	)
-
+	usersClient := userspb.NewUsersServiceClient(usersConn)
 	if err := userspb.RegisterUsersServiceHandlerClient(ctx, mux, usersClient); err != nil {
 		return nil, fmt.Errorf("proxy: register users: %w", err)
 	}

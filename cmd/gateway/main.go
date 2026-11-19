@@ -36,13 +36,7 @@ func main() {
 	}
 	defer usersConn.Close()
 
-	mediaConn, err := client.NewConn(cfg.MediaGRPCAddr)
-	if err != nil {
-		log.Fatalf("fatal: %v", err)
-	}
-	defer mediaConn.Close()
-
-	mux, err := proxy.NewMux(context.Background(), usersConn, mediaConn, cfg.CookieSecure)
+	mux, err := proxy.NewMux(context.Background(), usersConn, cfg.CookieSecure)
 	if err != nil {
 		log.Fatalf("fatal: %v", err)
 	}

@@ -19,18 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UsersService_Login_FullMethodName           = "/users.UsersService/Login"
-	UsersService_Refresh_FullMethodName         = "/users.UsersService/Refresh"
-	UsersService_Logout_FullMethodName          = "/users.UsersService/Logout"
-	UsersService_GetMe_FullMethodName           = "/users.UsersService/GetMe"
-	UsersService_GetAvatar_FullMethodName       = "/users.UsersService/GetAvatar"
-	UsersService_GetAvatarFile_FullMethodName   = "/users.UsersService/GetAvatarFile"
-	UsersService_SetAvatarFileID_FullMethodName = "/users.UsersService/SetAvatarFileID"
-	UsersService_UpdateAvatar_FullMethodName    = "/users.UsersService/UpdateAvatar"
-	UsersService_UpdateProfile_FullMethodName   = "/users.UsersService/UpdateProfile"
-	UsersService_ListIdentities_FullMethodName  = "/users.UsersService/ListIdentities"
-	UsersService_LinkIdentity_FullMethodName    = "/users.UsersService/LinkIdentity"
-	UsersService_UnlinkIdentity_FullMethodName  = "/users.UsersService/UnlinkIdentity"
+	UsersService_Login_FullMethodName          = "/users.UsersService/Login"
+	UsersService_Refresh_FullMethodName        = "/users.UsersService/Refresh"
+	UsersService_Logout_FullMethodName         = "/users.UsersService/Logout"
+	UsersService_GetMe_FullMethodName          = "/users.UsersService/GetMe"
+	UsersService_UpdateAvatar_FullMethodName   = "/users.UsersService/UpdateAvatar"
+	UsersService_UpdateProfile_FullMethodName  = "/users.UsersService/UpdateProfile"
+	UsersService_ListIdentities_FullMethodName = "/users.UsersService/ListIdentities"
+	UsersService_LinkIdentity_FullMethodName   = "/users.UsersService/LinkIdentity"
+	UsersService_UnlinkIdentity_FullMethodName = "/users.UsersService/UnlinkIdentity"
 )
 
 // UsersServiceClient is the client API for UsersService service.
@@ -41,9 +38,6 @@ type UsersServiceClient interface {
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
-	GetAvatar(ctx context.Context, in *GetAvatarRequest, opts ...grpc.CallOption) (*GetAvatarResponse, error)
-	GetAvatarFile(ctx context.Context, in *GetAvatarFileRequest, opts ...grpc.CallOption) (*GetAvatarFileResponse, error)
-	SetAvatarFileID(ctx context.Context, in *SetAvatarFileIDRequest, opts ...grpc.CallOption) (*SetAvatarFileIDResponse, error)
 	UpdateAvatar(ctx context.Context, in *UpdateAvatarRequest, opts ...grpc.CallOption) (*UpdateAvatarResponse, error)
 	UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*UpdateProfileResponse, error)
 	ListIdentities(ctx context.Context, in *ListIdentitiesRequest, opts ...grpc.CallOption) (*ListIdentitiesResponse, error)
@@ -93,36 +87,6 @@ func (c *usersServiceClient) GetMe(ctx context.Context, in *GetMeRequest, opts .
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetMeResponse)
 	err := c.cc.Invoke(ctx, UsersService_GetMe_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *usersServiceClient) GetAvatar(ctx context.Context, in *GetAvatarRequest, opts ...grpc.CallOption) (*GetAvatarResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAvatarResponse)
-	err := c.cc.Invoke(ctx, UsersService_GetAvatar_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *usersServiceClient) GetAvatarFile(ctx context.Context, in *GetAvatarFileRequest, opts ...grpc.CallOption) (*GetAvatarFileResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAvatarFileResponse)
-	err := c.cc.Invoke(ctx, UsersService_GetAvatarFile_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *usersServiceClient) SetAvatarFileID(ctx context.Context, in *SetAvatarFileIDRequest, opts ...grpc.CallOption) (*SetAvatarFileIDResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetAvatarFileIDResponse)
-	err := c.cc.Invoke(ctx, UsersService_SetAvatarFileID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -187,9 +151,6 @@ type UsersServiceServer interface {
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
-	GetAvatar(context.Context, *GetAvatarRequest) (*GetAvatarResponse, error)
-	GetAvatarFile(context.Context, *GetAvatarFileRequest) (*GetAvatarFileResponse, error)
-	SetAvatarFileID(context.Context, *SetAvatarFileIDRequest) (*SetAvatarFileIDResponse, error)
 	UpdateAvatar(context.Context, *UpdateAvatarRequest) (*UpdateAvatarResponse, error)
 	UpdateProfile(context.Context, *UpdateProfileRequest) (*UpdateProfileResponse, error)
 	ListIdentities(context.Context, *ListIdentitiesRequest) (*ListIdentitiesResponse, error)
@@ -216,15 +177,6 @@ func (UnimplementedUsersServiceServer) Logout(context.Context, *LogoutRequest) (
 }
 func (UnimplementedUsersServiceServer) GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMe not implemented")
-}
-func (UnimplementedUsersServiceServer) GetAvatar(context.Context, *GetAvatarRequest) (*GetAvatarResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetAvatar not implemented")
-}
-func (UnimplementedUsersServiceServer) GetAvatarFile(context.Context, *GetAvatarFileRequest) (*GetAvatarFileResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetAvatarFile not implemented")
-}
-func (UnimplementedUsersServiceServer) SetAvatarFileID(context.Context, *SetAvatarFileIDRequest) (*SetAvatarFileIDResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method SetAvatarFileID not implemented")
 }
 func (UnimplementedUsersServiceServer) UpdateAvatar(context.Context, *UpdateAvatarRequest) (*UpdateAvatarResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateAvatar not implemented")
@@ -330,60 +282,6 @@ func _UsersService_GetMe_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).GetMe(ctx, req.(*GetMeRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UsersService_GetAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAvatarRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UsersServiceServer).GetAvatar(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UsersService_GetAvatar_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).GetAvatar(ctx, req.(*GetAvatarRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UsersService_GetAvatarFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAvatarFileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UsersServiceServer).GetAvatarFile(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UsersService_GetAvatarFile_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).GetAvatarFile(ctx, req.(*GetAvatarFileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UsersService_SetAvatarFileID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetAvatarFileIDRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UsersServiceServer).SetAvatarFileID(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UsersService_SetAvatarFileID_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).SetAvatarFileID(ctx, req.(*SetAvatarFileIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -500,18 +398,6 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMe",
 			Handler:    _UsersService_GetMe_Handler,
-		},
-		{
-			MethodName: "GetAvatar",
-			Handler:    _UsersService_GetAvatar_Handler,
-		},
-		{
-			MethodName: "GetAvatarFile",
-			Handler:    _UsersService_GetAvatarFile_Handler,
-		},
-		{
-			MethodName: "SetAvatarFileID",
-			Handler:    _UsersService_SetAvatarFileID_Handler,
 		},
 		{
 			MethodName: "UpdateAvatar",

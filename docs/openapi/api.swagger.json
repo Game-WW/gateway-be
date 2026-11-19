@@ -475,40 +475,6 @@
       }
     },
     "/api/v1/users/me/avatar": {
-      "get": {
-        "summary": "Получить аватар",
-        "description": "Возвращает URL аватара.",
-        "operationId": "UsersService_GetAvatar",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/GetAvatarResponse"
-            }
-          },
-          "401": {
-            "description": "Нет cookie access_token или токен истёк",
-            "schema": {
-              "$ref": "#/definitions/Status"
-            }
-          },
-          "404": {
-            "description": "Аватар не найден",
-            "schema": {
-              "$ref": "#/definitions/Status"
-            }
-          },
-          "500": {
-            "description": "Ошибка при получении аватара",
-            "schema": {
-              "$ref": "#/definitions/Status"
-            }
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      },
       "patch": {
         "summary": "Обновить аватар",
         "description": "Обновляет аватар.",
@@ -564,14 +530,6 @@
         }
       },
       "additionalProperties": true
-    },
-    "GetAvatarResponse": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string"
-        }
-      }
     },
     "GetMeResponse": {
       "type": "object",
@@ -710,6 +668,9 @@
         },
         "show_online_status": {
           "type": "boolean"
+        },
+        "avatar_url": {
+          "type": "string"
         }
       },
       "required": [

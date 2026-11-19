@@ -20,6 +20,7 @@ message User {
   google.protobuf.Timestamp created_at = 3 [(google.api.field_behavior) = REQUIRED];
   optional string location = 4;
   bool show_online_status = 5;
+  optional string avatar_url = 6;
 }
 
 message UpdateProfileRequest {
@@ -35,22 +36,6 @@ message UpdateProfileRequest {
 message UpdateProfileResponse {
   User user = 1;
 }
-
-message GetAvatarRequest {}
-
-message GetAvatarResponse {
-  optional string url = 1;
-}
-
-message GetAvatarFileRequest {}
-
-message GetAvatarFileResponse {}
-
-message SetAvatarFileIDRequest {
-  string file_id = 1 [(google.api.field_behavior) = REQUIRED];
-}
-
-message SetAvatarFileIDResponse {}
 
 message UpdateAvatarRequest {
   bytes image = 1;
