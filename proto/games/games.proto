@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package games.v1;
+
+import "games/game.proto";
+
+option go_package = "github.com/Game-WW/gateway-be/gen/games;gamespb";
+
+service GamesService {
+  rpc CreateGame(CreateGameRequest) returns (CreateGameResponse);
+  rpc StreamSession(stream StreamSessionRequest) returns (stream StreamSessionResponse);
+}

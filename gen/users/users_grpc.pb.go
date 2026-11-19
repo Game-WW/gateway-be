@@ -23,6 +23,7 @@ const (
 	UsersService_Refresh_FullMethodName        = "/users.UsersService/Refresh"
 	UsersService_Logout_FullMethodName         = "/users.UsersService/Logout"
 	UsersService_GetMe_FullMethodName          = "/users.UsersService/GetMe"
+	UsersService_GetAvatar_FullMethodName      = "/users.UsersService/GetAvatar"
 	UsersService_UpdateAvatar_FullMethodName   = "/users.UsersService/UpdateAvatar"
 	UsersService_UpdateProfile_FullMethodName  = "/users.UsersService/UpdateProfile"
 	UsersService_ListIdentities_FullMethodName = "/users.UsersService/ListIdentities"
@@ -38,6 +39,7 @@ type UsersServiceClient interface {
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
+	GetAvatar(ctx context.Context, in *GetAvatarRequest, opts ...grpc.CallOption) (*GetAvatarResponse, error)
 	UpdateAvatar(ctx context.Context, in *UpdateAvatarRequest, opts ...grpc.CallOption) (*UpdateAvatarResponse, error)
 	UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*UpdateProfileResponse, error)
 	ListIdentities(ctx context.Context, in *ListIdentitiesRequest, opts ...grpc.CallOption) (*ListIdentitiesResponse, error)
@@ -87,6 +89,16 @@ func (c *usersServiceClient) GetMe(ctx context.Context, in *GetMeRequest, opts .
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetMeResponse)
 	err := c.cc.Invoke(ctx, UsersService_GetMe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) GetAvatar(ctx context.Context, in *GetAvatarRequest, opts ...grpc.CallOption) (*GetAvatarResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAvatarResponse)
+	err := c.cc.Invoke(ctx, UsersService_GetAvatar_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -151,6 +163,7 @@ type UsersServiceServer interface {
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
+	GetAvatar(context.Context, *GetAvatarRequest) (*GetAvatarResponse, error)
 	UpdateAvatar(context.Context, *UpdateAvatarRequest) (*UpdateAvatarResponse, error)
 	UpdateProfile(context.Context, *UpdateProfileRequest) (*UpdateProfileResponse, error)
 	ListIdentities(context.Context, *ListIdentitiesRequest) (*ListIdentitiesResponse, error)
@@ -177,6 +190,9 @@ func (UnimplementedUsersServiceServer) Logout(context.Context, *LogoutRequest) (
 }
 func (UnimplementedUsersServiceServer) GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMe not implemented")
+}
+func (UnimplementedUsersServiceServer) GetAvatar(context.Context, *GetAvatarRequest) (*GetAvatarResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAvatar not implemented")
 }
 func (UnimplementedUsersServiceServer) UpdateAvatar(context.Context, *UpdateAvatarRequest) (*UpdateAvatarResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateAvatar not implemented")
@@ -282,6 +298,24 @@ func _UsersService_GetMe_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).GetMe(ctx, req.(*GetMeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersService_GetAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAvatarRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).GetAvatar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UsersService_GetAvatar_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).GetAvatar(ctx, req.(*GetAvatarRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -398,6 +432,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMe",
 			Handler:    _UsersService_GetMe_Handler,
+		},
+		{
+			MethodName: "GetAvatar",
+			Handler:    _UsersService_GetAvatar_Handler,
 		},
 		{
 			MethodName: "UpdateAvatar",

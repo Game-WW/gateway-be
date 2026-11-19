@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package games.v1;
+
+option go_package = "github.com/Game-WW/gateway-be/gen/games;gamespb";
+
+message CreateGameRequest {
+  string first_user_id = 1; // ID создателя партии
+  string second_user_id = 2; // ID соперника
+}
+
+message CreateGameResponse {
+  Game game = 1; // Состояние партии
+}
+
+enum GameColor {
+  GAME_COLOR_UNSPECIFIED = 0; // Цвет не указан
+  GAME_COLOR_WHITE = 1; // Белые
+  GAME_COLOR_BLACK = 2; // Чёрные
+}
+
+enum GameStatus {
+  GAME_STATUS_UNSPECIFIED = 0; // Статус не указан
+  GAME_STATUS_IN_PROGRESS = 1; // Партия идёт
+  GAME_STATUS_FINISHED = 2; // Партия завершена
+}
+
+enum GameResult {
+  GAME_RESULT_UNSPECIFIED = 0; // Результат не указан
+  GAME_RESULT_WHITE_WON = 1; // Победа белых
+  GAME_RESULT_BLACK_WON = 2; // Победа чёрных
+  GAME_RESULT_DRAW = 3; // Ничья
+}
+
+enum TerminationReason {
+  TERMINATION_REASON_UNSPECIFIED = 0; // Причина не указана
+  TERMINATION_REASON_CHECKMATE = 1; // Мат
+  TERMINATION_REASON_STALEMATE = 2; // Пат
+  TERMINATION_REASON_DRAW_BY_RULE = 3; // Ничья по правилам
+  TERMINATION_REASON_RESIGN = 4; // Сдача игрока
+  TERMINATION_REASON_DRAW_AGREEMENT = 5; // Ничья по соглашению
+}
+
+message Game {
+  string id = 1; // ID партии
+  GameStatus status = 2; // Статус партии
+  string fen = 3; // Текущая позиция в нотации FEN
+  string white_user_id = 4; // ID игрока за белых
+  string black_user_id = 5; // ID игрока за чёрных
+  uint32 ply = 6; // Число сыгранных полуходов
+  GameResult result = 7; // Результат партии
+  optional string last_move_uci = 8; // Последний ход в формате UCI
+  TerminationReason termination_reason = 9; // Причина завершения партии
+  GameColor draw_offered_by = 10; // Цвет игрока, предложившего ничью
+}
+
+message StreamSessionRequest {
+  oneof command {
+    JoinSession join = 1; // Подключение к партии
+    PlayMove move = 2; // Ход
+    Resign resign = 3; // Сдача партии
+    OfferDraw offer_draw = 4; // Предложение ничьей
+    RespondDraw respond_draw = 5; // Ответ на предложение ничьей
+  }
+}
+
+message JoinSession {
+  string game_id = 1; // ID партии
+}
+
+message PlayMove {
+  string command_id = 1; // ID команды
+  string uci = 2; // Ход в формате UCI
+  uint32 expected_ply = 3; // Число полуходов в позиции, из которой сделан ход
+}
+
+message Resign {
+  string command_id = 1; // ID команды
+}
+
+message OfferDraw {
+  string command_id = 1; // ID команды
+}
+
+message RespondDraw {
+  string command_id = 1; // ID команды
+  bool accept = 2; // Принять предложение ничьей
+}
+
+message StreamSessionResponse {
+  string command_id = 1; // ID команды
+  oneof event {
+    Game game = 2; // Состояние партии
+    CommandRejected command_rejected = 3; // Отклонение команды
+  }
+}
+
+message CommandRejected {
+  enum Reason {
+    REASON_UNSPECIFIED = 0; // Причина не указана
+    REASON_GAME_NOT_IN_PROGRESS = 1; // Партия сейчас не идёт
+    REASON_NOT_YOUR_TURN = 2; // Сейчас ход соперника
+    REASON_ILLEGAL_MOVE = 3; // Недопустимый ход
+    REASON_STALE_POSITION = 4; // Позиция уже изменилась
+    REASON_NO_ACTIVE_DRAW_OFFER = 5; // Нет активного предложения ничьей (или оно уже отозвано)
+    REASON_INVALID_ACTION = 6; // Действие недопустимо в текущем состоянии (напр. повторный оффер ничьей)
+  }
+
+  Reason reason = 1; // Причина отклонения команды
+}
