@@ -22,7 +22,7 @@ const (
 	UsersService_Login_FullMethodName          = "/users.UsersService/Login"
 	UsersService_Refresh_FullMethodName        = "/users.UsersService/Refresh"
 	UsersService_Logout_FullMethodName         = "/users.UsersService/Logout"
-	UsersService_GetMe_FullMethodName          = "/users.UsersService/GetMe"
+	UsersService_GetProfile_FullMethodName     = "/users.UsersService/GetProfile"
 	UsersService_GetAvatar_FullMethodName      = "/users.UsersService/GetAvatar"
 	UsersService_UpdateAvatar_FullMethodName   = "/users.UsersService/UpdateAvatar"
 	UsersService_UpdateProfile_FullMethodName  = "/users.UsersService/UpdateProfile"
@@ -38,7 +38,7 @@ type UsersServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
-	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
+	GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*GetProfileResponse, error)
 	GetAvatar(ctx context.Context, in *GetAvatarRequest, opts ...grpc.CallOption) (*GetAvatarResponse, error)
 	UpdateAvatar(ctx context.Context, in *UpdateAvatarRequest, opts ...grpc.CallOption) (*UpdateAvatarResponse, error)
 	UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*UpdateProfileResponse, error)
@@ -85,10 +85,10 @@ func (c *usersServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts
 	return out, nil
 }
 
-func (c *usersServiceClient) GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error) {
+func (c *usersServiceClient) GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*GetProfileResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetMeResponse)
-	err := c.cc.Invoke(ctx, UsersService_GetMe_FullMethodName, in, out, cOpts...)
+	out := new(GetProfileResponse)
+	err := c.cc.Invoke(ctx, UsersService_GetProfile_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ type UsersServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
-	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
+	GetProfile(context.Context, *GetProfileRequest) (*GetProfileResponse, error)
 	GetAvatar(context.Context, *GetAvatarRequest) (*GetAvatarResponse, error)
 	UpdateAvatar(context.Context, *UpdateAvatarRequest) (*UpdateAvatarResponse, error)
 	UpdateProfile(context.Context, *UpdateProfileRequest) (*UpdateProfileResponse, error)
@@ -188,8 +188,8 @@ func (UnimplementedUsersServiceServer) Refresh(context.Context, *RefreshRequest)
 func (UnimplementedUsersServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Logout not implemented")
 }
-func (UnimplementedUsersServiceServer) GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetMe not implemented")
+func (UnimplementedUsersServiceServer) GetProfile(context.Context, *GetProfileRequest) (*GetProfileResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetProfile not implemented")
 }
 func (UnimplementedUsersServiceServer) GetAvatar(context.Context, *GetAvatarRequest) (*GetAvatarResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAvatar not implemented")
@@ -284,20 +284,20 @@ func _UsersService_Logout_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersService_GetMe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMeRequest)
+func _UsersService_GetProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServiceServer).GetMe(ctx, in)
+		return srv.(UsersServiceServer).GetProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UsersService_GetMe_FullMethodName,
+		FullMethod: UsersService_GetProfile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).GetMe(ctx, req.(*GetMeRequest))
+		return srv.(UsersServiceServer).GetProfile(ctx, req.(*GetProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -430,8 +430,8 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersService_Logout_Handler,
 		},
 		{
-			MethodName: "GetMe",
-			Handler:    _UsersService_GetMe_Handler,
+			MethodName: "GetProfile",
+			Handler:    _UsersService_GetProfile_Handler,
 		},
 		{
 			MethodName: "GetAvatar",

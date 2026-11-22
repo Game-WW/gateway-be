@@ -141,15 +141,26 @@ service UsersService {
     };
   }
 
-  rpc GetMe(GetMeRequest) returns (GetMeResponse) {
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse) {
     option (google.api.http) = {
-      get: "/api/v1/users/me"
+      get: "/api/v1/users/profile/{id}"
       response_body: "user"
+      additional_bindings: {
+        get: "/api/v1/users/profile"
+        response_body: "user"
+      }
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "users"
-      summary: "Текущий пользователь"
-      description: "Нужна cookie access_token (ставит /auth/login/{provider})."
+      summary: "Получить профиль"
+      description: "Без ID возвращает профиль текущего пользователя. Нужна cookie access_token (ставит /auth/login/{provider})."
+      responses: {
+        key: "400"
+        value: {
+          description: "Некорректный ID пользователя"
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
       responses: {
         key: "401"
         value: {
@@ -164,7 +175,7 @@ service UsersService {
       responses: {
         key: "404"
         value: {
-          description: "Пользователь из токена удалён из БД"
+          description: "Пользователь с указанным ID не найден"
           schema: {json_schema: {ref: ".google.rpc.Status"}}
           examples: {
             key: "application/json"

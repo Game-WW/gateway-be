@@ -26,7 +26,7 @@ var File_users_users_proto protoreflect.FileDescriptor
 
 const file_users_users_proto_rawDesc = "" +
 	"\n" +
-	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xe77\n" +
+	"\x11users/users.proto\x12\x05users\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x10users/auth.proto\x1a\x14users/identity.proto\x1a\x10users/user.proto2\xca9\n" +
 	"\fUsersService\x12\xea\x06\n" +
 	"\x05Login\x12\x13.users.LoginRequest\x1a\x14.users.LoginResponse\"\xb5\x06\x92A\x8c\x06\n" +
 	"\x04auth\x129Вход через внешнего провайдера\x1a\xbc\x01Google принимает id_token в Authorization; Yandex принимает auth code в X-Auth-Code и, при PKCE, X-Code-Verifier. Ставит cookie access_token и refresh_token.J\x9a\x01\n" +
@@ -60,21 +60,25 @@ const file_users_users_proto_rawDesc = "" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x15\"\x13/api/v1/auth/logout\x12\xe1\x05\n" +
-	"\x05GetMe\x12\x13.users.GetMeRequest\x1a\x14.users.GetMeResponse\"\xac\x05\x92A\x8a\x05\n" +
-	"\x05users\x12'Текущий пользователь\x1aEНужна cookie access_token (ставит /auth/login/{provider}).J\xc9\x01\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x15\"\x13/api/v1/auth/logout\x12\xc4\a\n" +
+	"\n" +
+	"GetProfile\x12\x18.users.GetProfileRequest\x1a\x19.users.GetProfileResponse\"\x80\a\x92A\xb5\x06\n" +
+	"\x05users\x12\x1fПолучить профиль\x1a\x9e\x01Без ID возвращает профиль текущего пользователя. Нужна cookie access_token (ставит /auth/login/{provider}).JU\n" +
+	"\x03400\x12N\n" +
+	"4Некорректный ID пользователя\x12\x16\n" +
+	"\x14\x1a\x12.google.rpc.StatusJ\xc9\x01\n" +
 	"\x03401\x12\xc1\x01\n" +
 	"XНет cookie access_token или токен истёк — вызвать /auth/refresh\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"M\n" +
-	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\xab\x01\n" +
-	"\x03404\x12\xa3\x01\n" +
-	"AПользователь из токена удалён из БД\x12\x16\n" +
+	"\x10application/json\x129{\"code\": 16, \"message\": \"unauthenticated\", \"details\": []}J\xad\x01\n" +
+	"\x03404\x12\xa5\x01\n" +
+	"CПользователь с указанным ID не найден\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"F\n" +
 	"\x10application/json\x122{\"code\": 5, \"message\": \"not found\", \"details\": []}J\x96\x01\n" +
 	"\x03500\x12\x8e\x01\n" +
 	"&Ошибка users-be (БД и т.п.)\x12\x16\n" +
 	"\x14\x1a\x12.google.rpc.Status\"L\n" +
-	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02\x18b\x04user\x12\x10/api/v1/users/me\x12\xf3\x04\n" +
+	"\x10application/json\x128{\"code\": 13, \"message\": \"internal error\", \"details\": []}\x82\xd3\xe4\x93\x02AZ\x1db\x04user\x12\x15/api/v1/users/profileb\x04user\x12\x1a/api/v1/users/profile/{id}\x12\xf3\x04\n" +
 	"\tGetAvatar\x12\x17.users.GetAvatarRequest\x1a\x18.users.GetAvatarResponse\"\xb2\x04\x92A\x88\x04\n" +
 	"\x05users\x12*Получить аватар игрока\x1a\xd5\x01Возвращает аватар игрока в поле image в кодировке Base64. Если аватар не установлен, ответ 200 без поля image. Нужна cookie access_token.JI\n" +
 	"\x03400\x12B\n" +
@@ -169,7 +173,7 @@ var file_users_users_proto_goTypes = []any{
 	(*LoginRequest)(nil),           // 0: users.LoginRequest
 	(*RefreshRequest)(nil),         // 1: users.RefreshRequest
 	(*LogoutRequest)(nil),          // 2: users.LogoutRequest
-	(*GetMeRequest)(nil),           // 3: users.GetMeRequest
+	(*GetProfileRequest)(nil),      // 3: users.GetProfileRequest
 	(*GetAvatarRequest)(nil),       // 4: users.GetAvatarRequest
 	(*UpdateAvatarRequest)(nil),    // 5: users.UpdateAvatarRequest
 	(*UpdateProfileRequest)(nil),   // 6: users.UpdateProfileRequest
@@ -179,7 +183,7 @@ var file_users_users_proto_goTypes = []any{
 	(*LoginResponse)(nil),          // 10: users.LoginResponse
 	(*RefreshResponse)(nil),        // 11: users.RefreshResponse
 	(*LogoutResponse)(nil),         // 12: users.LogoutResponse
-	(*GetMeResponse)(nil),          // 13: users.GetMeResponse
+	(*GetProfileResponse)(nil),     // 13: users.GetProfileResponse
 	(*GetAvatarResponse)(nil),      // 14: users.GetAvatarResponse
 	(*UpdateAvatarResponse)(nil),   // 15: users.UpdateAvatarResponse
 	(*UpdateProfileResponse)(nil),  // 16: users.UpdateProfileResponse
@@ -191,7 +195,7 @@ var file_users_users_proto_depIdxs = []int32{
 	0,  // 0: users.UsersService.Login:input_type -> users.LoginRequest
 	1,  // 1: users.UsersService.Refresh:input_type -> users.RefreshRequest
 	2,  // 2: users.UsersService.Logout:input_type -> users.LogoutRequest
-	3,  // 3: users.UsersService.GetMe:input_type -> users.GetMeRequest
+	3,  // 3: users.UsersService.GetProfile:input_type -> users.GetProfileRequest
 	4,  // 4: users.UsersService.GetAvatar:input_type -> users.GetAvatarRequest
 	5,  // 5: users.UsersService.UpdateAvatar:input_type -> users.UpdateAvatarRequest
 	6,  // 6: users.UsersService.UpdateProfile:input_type -> users.UpdateProfileRequest
@@ -201,7 +205,7 @@ var file_users_users_proto_depIdxs = []int32{
 	10, // 10: users.UsersService.Login:output_type -> users.LoginResponse
 	11, // 11: users.UsersService.Refresh:output_type -> users.RefreshResponse
 	12, // 12: users.UsersService.Logout:output_type -> users.LogoutResponse
-	13, // 13: users.UsersService.GetMe:output_type -> users.GetMeResponse
+	13, // 13: users.UsersService.GetProfile:output_type -> users.GetProfileResponse
 	14, // 14: users.UsersService.GetAvatar:output_type -> users.GetAvatarResponse
 	15, // 15: users.UsersService.UpdateAvatar:output_type -> users.UpdateAvatarResponse
 	16, // 16: users.UsersService.UpdateProfile:output_type -> users.UpdateProfileResponse

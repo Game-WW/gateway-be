@@ -8,9 +8,11 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/Game-WW/gateway-be/gen/users;userspb";
 
-message GetMeRequest {}
+message GetProfileRequest {
+  string id = 1;
+}
 
-message GetMeResponse {
+message GetProfileResponse {
   User user = 1;
 }
 
