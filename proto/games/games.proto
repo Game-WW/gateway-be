@@ -3,10 +3,13 @@ syntax = "proto3";
 package games.v1;
 
 import "games/game.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/Game-WW/gateway-be/gen/games;gamespb";
 
 service GamesService {
-  rpc CreateGame(CreateGameRequest) returns (CreateGameResponse);
+  rpc CreateGame(CreateGameRequest) returns (CreateGameResponse) {
+ option (google.api.http) = { post: "/api/v1/games" body: "*" };
+ }
   rpc StreamSession(stream StreamSessionRequest) returns (stream StreamSessionResponse);
 }

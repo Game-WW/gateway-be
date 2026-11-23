@@ -9,6 +9,7 @@ import (
 )
 
 type Config struct {
+	GamesGRPCAddr  string `env:"GAMES_GRPC_ADDR" envDefault:"127.0.0.1:8082"`
 	Port           int    `env:"PORT"            envDefault:"8080"`
 	JWTSecret      string `env:"JWT_SECRET,required"`
 	UsersGRPCAddr  string `env:"USERS_GRPC_ADDR" envDefault:"127.0.0.1:50051"`
@@ -35,6 +36,9 @@ func (c *Config) Validate() error {
 	}
 	if len(c.JWTSecret) < 32 {
 		return fmt.Errorf("config: JWT_SECRET must be at least 32 chars")
+	}
+	if strings.TrimSpace(c.GamesGRPCAddr) == "" {
+		return fmt.Errorf("config: GAMES_GRPC_ADDR is required")
 	}
 	if c.UsersGRPCAddr == "" {
 		return fmt.Errorf("config: USERS_GRPC_ADDR is required")

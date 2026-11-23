@@ -36,7 +36,13 @@ func main() {
 	}
 	defer usersConn.Close()
 
-	mux, err := proxy.NewMux(context.Background(), usersConn, cfg.CookieSecure)
+	gamesConn, err := client.NewConn(cfg.GamesGRPCAddr)
+	if err != nil {
+		log.Fatalf("fatal: %v", err)
+	}
+	defer gamesConn.Close()
+
+	mux, err := proxy.NewMux(context.Background(), usersConn, gamesConn, cfg.CookieSecure)
 	if err != nil {
 		log.Fatalf("fatal: %v", err)
 	}

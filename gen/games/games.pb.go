@@ -7,6 +7,7 @@
 package gamespb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -24,10 +25,10 @@ var File_games_games_proto protoreflect.FileDescriptor
 
 const file_games_games_proto_rawDesc = "" +
 	"\n" +
-	"\x11games/games.proto\x12\bgames.v1\x1a\x10games/game.proto2\xad\x01\n" +
-	"\fGamesService\x12G\n" +
+	"\x11games/games.proto\x12\bgames.v1\x1a\x10games/game.proto\x1a\x1cgoogle/api/annotations.proto2\xc7\x01\n" +
+	"\fGamesService\x12a\n" +
 	"\n" +
-	"CreateGame\x12\x1b.games.v1.CreateGameRequest\x1a\x1c.games.v1.CreateGameResponse\x12T\n" +
+	"CreateGame\x12\x1b.games.v1.CreateGameRequest\x1a\x1c.games.v1.CreateGameResponse\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/api/v1/games\x12T\n" +
 	"\rStreamSession\x12\x1e.games.v1.StreamSessionRequest\x1a\x1f.games.v1.StreamSessionResponse(\x010\x01B1Z/github.com/Game-WW/gateway-be/gen/games;gamespbb\x06proto3"
 
 var file_games_games_proto_goTypes = []any{

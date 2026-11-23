@@ -172,6 +172,29 @@
         ]
       }
     },
+    "/api/v1/games": {
+      "post": {
+        "operationId": "GamesService_CreateGame",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateGameResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateGameRequest"
+            }
+          }
+        ]
+      }
+    },
     "/api/v1/identities": {
       "get": {
         "summary": "Способы входа",
@@ -662,6 +685,105 @@
       },
       "additionalProperties": true
     },
+    "CreateGameRequest": {
+      "type": "object",
+      "properties": {
+        "first_user_id": {
+          "type": "string",
+          "title": "ID создателя партии"
+        },
+        "second_user_id": {
+          "type": "string",
+          "title": "ID соперника"
+        }
+      }
+    },
+    "CreateGameResponse": {
+      "type": "object",
+      "properties": {
+        "game": {
+          "$ref": "#/definitions/Game",
+          "title": "Состояние партии"
+        }
+      }
+    },
+    "Game": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "ID партии"
+        },
+        "status": {
+          "$ref": "#/definitions/GameStatus",
+          "title": "Статус партии"
+        },
+        "fen": {
+          "type": "string",
+          "title": "Текущая позиция в нотации FEN"
+        },
+        "white_user_id": {
+          "type": "string",
+          "title": "ID игрока за белых"
+        },
+        "black_user_id": {
+          "type": "string",
+          "title": "ID игрока за чёрных"
+        },
+        "ply": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Число сыгранных полуходов"
+        },
+        "result": {
+          "$ref": "#/definitions/GameResult",
+          "title": "Результат партии"
+        },
+        "last_move_uci": {
+          "type": "string",
+          "title": "Последний ход в формате UCI"
+        },
+        "termination_reason": {
+          "$ref": "#/definitions/TerminationReason",
+          "title": "Причина завершения партии"
+        },
+        "draw_offered_by": {
+          "$ref": "#/definitions/GameColor",
+          "title": "Цвет игрока, предложившего ничью"
+        }
+      }
+    },
+    "GameColor": {
+      "type": "string",
+      "enum": [
+        "GAME_COLOR_UNSPECIFIED",
+        "GAME_COLOR_WHITE",
+        "GAME_COLOR_BLACK"
+      ],
+      "default": "GAME_COLOR_UNSPECIFIED",
+      "description": "- GAME_COLOR_UNSPECIFIED: Цвет не указан\n - GAME_COLOR_WHITE: Белые\n - GAME_COLOR_BLACK: Чёрные"
+    },
+    "GameResult": {
+      "type": "string",
+      "enum": [
+        "GAME_RESULT_UNSPECIFIED",
+        "GAME_RESULT_WHITE_WON",
+        "GAME_RESULT_BLACK_WON",
+        "GAME_RESULT_DRAW"
+      ],
+      "default": "GAME_RESULT_UNSPECIFIED",
+      "description": "- GAME_RESULT_UNSPECIFIED: Результат не указан\n - GAME_RESULT_WHITE_WON: Победа белых\n - GAME_RESULT_BLACK_WON: Победа чёрных\n - GAME_RESULT_DRAW: Ничья"
+    },
+    "GameStatus": {
+      "type": "string",
+      "enum": [
+        "GAME_STATUS_UNSPECIFIED",
+        "GAME_STATUS_IN_PROGRESS",
+        "GAME_STATUS_FINISHED"
+      ],
+      "default": "GAME_STATUS_UNSPECIFIED",
+      "description": "- GAME_STATUS_UNSPECIFIED: Статус не указан\n - GAME_STATUS_IN_PROGRESS: Партия идёт\n - GAME_STATUS_FINISHED: Партия завершена"
+    },
     "GetAvatarResponse": {
       "type": "object",
       "properties": {
@@ -751,6 +873,19 @@
           }
         }
       }
+    },
+    "TerminationReason": {
+      "type": "string",
+      "enum": [
+        "TERMINATION_REASON_UNSPECIFIED",
+        "TERMINATION_REASON_CHECKMATE",
+        "TERMINATION_REASON_STALEMATE",
+        "TERMINATION_REASON_DRAW_BY_RULE",
+        "TERMINATION_REASON_RESIGN",
+        "TERMINATION_REASON_DRAW_AGREEMENT"
+      ],
+      "default": "TERMINATION_REASON_UNSPECIFIED",
+      "description": "- TERMINATION_REASON_UNSPECIFIED: Причина не указана\n - TERMINATION_REASON_CHECKMATE: Мат\n - TERMINATION_REASON_STALEMATE: Пат\n - TERMINATION_REASON_DRAW_BY_RULE: Ничья по правилам\n - TERMINATION_REASON_RESIGN: Сдача игрока\n - TERMINATION_REASON_DRAW_AGREEMENT: Ничья по соглашению"
     },
     "UnlinkIdentityResponse": {
       "type": "object"
